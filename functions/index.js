@@ -4,7 +4,13 @@ const app = require("express")();
 
 const { verifyAuth } = require("./middlewares/auth");
 
-const { getAllEntries, getEntry, createEntry } = require("./handlers/entries");
+const {
+  getAllEntries,
+  getEntry,
+  createEntry,
+  commentOnEntry,
+} = require("./handlers/entries");
+
 const {
   signUp,
   signIn,
@@ -17,6 +23,7 @@ const {
 app.get("/entries", getAllEntries);
 app.get("/entry/:id", getEntry);
 app.post("/entry", verifyAuth, createEntry);
+app.post("/entry/:id/comment", verifyAuth, commentOnEntry);
 
 //Users routes
 app.post("/signup", signUp);

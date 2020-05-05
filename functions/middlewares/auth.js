@@ -10,7 +10,10 @@ exports.verifyAuth = function (req, res, next) {
       .verifyIdToken(token)
       .then((decodedToken) => (req.user = decodedToken))
       .then(() => db.collection("users").limit(1).get())
-      .then((data) => (req.user.username = data.docs[0].data().username))
+      .then((data) => {
+        req.user.username = data.docs[0].data().username;
+        req.user.avatarUrl = data.docs[0].data().avatarUrl;
+      })
       .then(() => next())
       .catch((err) => {
         console.error(err);

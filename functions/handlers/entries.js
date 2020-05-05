@@ -33,7 +33,7 @@ exports.getEntry = function (req, res) {
           .orderBy("createdAt", "desc")
           .where("entryId", "==", id)
           .get();
-      } else return res.status(404).json({ error: "Entry not found." });
+      } else throw new Error("invalid-entry");
     })
     .then((comments) => {
       entry.comments = [];
@@ -42,9 +42,11 @@ exports.getEntry = function (req, res) {
     })
     .catch((err) => {
       console.error(err);
-      return res
-        .status(500)
-        .json({ message: "something went wrong, try again later..." });
+      return err.message == "invalid-entry"
+        ? res.status(404).json({ error: "Entry not found." })
+        : res
+            .status(500)
+            .json({ message: "something went wrong, try again later..." });
     });
 };
 
@@ -65,5 +67,38 @@ exports.createEntry = function (req, res) {
       return res
         .status(500)
         .json({ message: "something went wrong, try again later..." });
+    });
+};
+
+exports.commentOnEntry = function (req, res) {
+  const id = req.params.id;
+  const { body } = req.body;
+
+  if (!body.trim())
+    return res.status(400).json({ error: "Must not be empty." });
+
+  const comment = {
+    entryId: id,
+    body,
+    username: req.user.username,
+    createdAt: new Date().toISOString(),
+    userAvatar: req.user.avatarUrl,
+  };
+
+  return db
+    .doc(`/entries/${id}`)
+    .get()
+    .then((entryData) => {
+      if (entryData.exists) return db.collection("comments").add(comment);
+      else throw new Error("invalid-entry");
+    })
+    .then(() => res.status(201).json(comment))
+    .catch((err) => {
+      console.error(err);
+      return err.message == "invalid-entry"
+        ? res.status(404).json({ error: "Entry not found." })
+        : res
+            .status(500)
+            .json({ message: "something went wrong, try again later..." });
     });
 };
