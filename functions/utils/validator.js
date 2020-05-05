@@ -27,3 +27,17 @@ exports.user = function (form, action) {
     resolve(errors);
   });
 };
+
+exports.userDetails = function (form) {
+  const fields = {};
+
+  for (input in form) {
+    if (!!form[input].trim()) {
+      input === "website" && !form[input].substring(0, 4) !== "http"
+        ? (fields[input] = `http://${form[input]}`)
+        : (fields[input] = form[input]);
+    }
+  }
+
+  return fields;
+};
