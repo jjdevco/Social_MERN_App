@@ -18,6 +18,36 @@ exports.getAllEntries = function (req, res) {
     });
 };
 
+exports.getEntry = function (req, res) {
+  const id = req.params.id;
+  let entry = {};
+  return db
+    .doc(`/entries/${id}`)
+    .get()
+    .then((entryData) => {
+      if (entryData.exists) {
+        entry = entryData.data();
+        entry.id = entryData.id;
+        return db
+          .collection("comments")
+          .orderBy("createdAt", "desc")
+          .where("entryId", "==", id)
+          .get();
+      } else return res.status(404).json({ error: "Entry not found." });
+    })
+    .then((comments) => {
+      entry.comments = [];
+      comments.forEach((comment) => entry.comments.push(comment.data()));
+      return res.json(entry);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ message: "something went wrong, try again later..." });
+    });
+};
+
 exports.createEntry = function (req, res) {
   const { body } = req.body;
   return db

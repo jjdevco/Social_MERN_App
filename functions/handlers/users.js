@@ -19,7 +19,7 @@ exports.signIn = function (req, res) {
               ? res
                   .status(403)
                   .json({ general: "Wrong credentials, please try again...." })
-              : res.status(500).json({ code: err.code, message: err.message });
+              : res.status(500).json({ error: err.code });
           })
   );
 };
@@ -66,9 +66,34 @@ exports.signUp = function (req, res) {
               ? res
                   .status(400)
                   .json({ username: "This username is already taken." })
-              : res.status(500).json({ code: err.code, message: err.message });
+              : res.status(500).json({ error: err.code });
           })
   );
+};
+
+exports.getUserInfo = function (req, res) {
+  let user = {};
+  return db
+    .doc(`/users/${req.user.username}`)
+    .get()
+    .then((userData) => {
+      if (userData.exists) {
+        user.credentials = userData.data();
+        return db
+          .collection("likes")
+          .where("username", "==", req.user.username)
+          .get();
+      } else res.status(404).json({ error: "User not found." });
+    })
+    .then((likes) => {
+      user.likes = [];
+      likes.forEach((like) => user.likes.push(like.data()));
+      return res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    });
 };
 
 exports.updateUserDetails = function (req, res) {
@@ -79,7 +104,7 @@ exports.updateUserDetails = function (req, res) {
     .then(() => res.json({ message: "User details updated successfully..." }))
     .catch((err) => {
       console.error(err);
-      return res.status(500).json({ code: err.code, message: err.message });
+      return res.status(500).json({ error: err.code });
     });
 };
 
@@ -130,7 +155,7 @@ exports.uploadAvatar = function (req, res) {
       .then(() => res.json({ message: "Image upload successfully..." }))
       .catch((err) => {
         console.error(err);
-        return res.status(500).json({ code: err.code, message: err.message });
+        return res.status(500).json({ error: err.code });
       });
   });
 
