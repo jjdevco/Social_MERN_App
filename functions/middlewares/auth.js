@@ -9,10 +9,12 @@ exports.verifyAuth = function (req, res, next) {
       .auth()
       .verifyIdToken(token)
       .then((decodedToken) => (req.user = decodedToken))
-      .then(() => db.collection("users").limit(1).get())
-      .then((data) => {
-        req.user.username = data.docs[0].data().username;
-        req.user.avatarUrl = data.docs[0].data().avatarUrl;
+      .then(() =>
+        db.collection("users").where("id", "==", req.user.uid).limit(1).get()
+      )
+      .then((users) => {
+        req.user.username = users.docs[0].data().username;
+        req.user.avatarUrl = users.docs[0].data().avatarUrl;
       })
       .then(() => next())
       .catch((err) => {
