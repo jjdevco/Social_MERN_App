@@ -22,6 +22,12 @@ const {
   uploadAvatar,
 } = require("./handlers/users");
 
+const {
+  createNotificationOnLike,
+  createNotificationOnComment,
+  deleteNotificationOnUnlike,
+} = require("./handlers/notifications");
+
 //Entries routes
 app.get("/entries", getAllEntries);
 app.get("/entry/:id", getEntry);
@@ -37,5 +43,10 @@ app.post("/signin", signIn);
 app.get("/user", verifyAuth, getUserInfo);
 app.post("/user/details", verifyAuth, updateUserDetails);
 app.post("/user/avatar", verifyAuth, uploadAvatar);
+
+//Notifications server functions
+exports.createNotificationOnLike = createNotificationOnLike;
+exports.deleteNotificationOnUnlike = deleteNotificationOnUnlike;
+exports.createNotificationOnComment = createNotificationOnComment;
 
 exports.api = functions.https.onRequest(app);
