@@ -11,6 +11,7 @@ const {
   commentOnEntry,
   likeEntry,
   unlikeEntry,
+  deleteEntry,
 } = require("./handlers/entries");
 
 const {
@@ -28,6 +29,7 @@ app.post("/entry", verifyAuth, createEntry);
 app.post("/entry/:id/comment", verifyAuth, commentOnEntry);
 app.post("/entry/:id/like", verifyAuth, likeEntry);
 app.post("/entry/:id/unlike", verifyAuth, unlikeEntry);
+app.delete("/entry/:id", verifyAuth, deleteEntry);
 
 //Users routes
 app.post("/signup", signUp);

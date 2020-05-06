@@ -55,7 +55,7 @@ exports.createEntry = function (req, res) {
   const { user } = req;
 
   const newEntry = {
-    owner: user.username,
+    username: user.username,
     body,
     userAvatar: user.avatarUrl,
     createdAt: new Date().toISOString(),
@@ -74,6 +74,39 @@ exports.createEntry = function (req, res) {
       return res
         .status(500)
         .json({ message: "something went wrong, try again later..." });
+    });
+};
+
+exports.deleteEntry = function (req, res) {
+  const { id } = req.params;
+  const { user } = req;
+
+  const entryDocument = db.doc(`/entries/${id}`);
+
+  return entryDocument
+    .get()
+    .then((entry) => {
+      if (!entry.exists) throw new Error("invalid-entry");
+      else if (entry.data().username !== user.username)
+        throw new Error("unauthorized");
+      else return entryDocument.delete();
+    })
+    .then(() => db.collection("comments").where("entryId", "==", id).get())
+    .then((comments) =>
+      comments.docs.forEach((comment) => comment.ref.delete())
+    )
+    .then(() => db.collection("likes").where("entryId", "==", id).get())
+    .then((likes) => likes.docs.forEach((like) => like.ref.delete()))
+    .then(() => res.json({ message: "Entry deleted successfully..." }))
+    .catch((err) => {
+      console.error(err);
+      return err.message == "invalid-entry"
+        ? res.status(404).json({ error: "Entry not found." })
+        : err.message == "unauthorized"
+        ? res.status(403).json({ error: "Unauthorized action..." })
+        : res
+            .status(500)
+            .json({ message: "something went wrong, try again later..." });
     });
 };
 
