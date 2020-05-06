@@ -9,6 +9,8 @@ const {
   getEntry,
   createEntry,
   commentOnEntry,
+  likeEntry,
+  unlikeEntry,
 } = require("./handlers/entries");
 
 const {
@@ -24,6 +26,8 @@ app.get("/entries", getAllEntries);
 app.get("/entry/:id", getEntry);
 app.post("/entry", verifyAuth, createEntry);
 app.post("/entry/:id/comment", verifyAuth, commentOnEntry);
+app.post("/entry/:id/like", verifyAuth, likeEntry);
+app.post("/entry/:id/unlike", verifyAuth, unlikeEntry);
 
 //Users routes
 app.post("/signup", signUp);
