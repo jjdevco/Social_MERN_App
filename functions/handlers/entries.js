@@ -96,10 +96,14 @@ exports.commentOnEntry = function (req, res) {
   return db
     .doc(`/entries/${id}`)
     .get()
-    .then((entryData) => {
-      if (entryData.exists) return db.collection("comments").add(comment);
+    .then((entry) => {
+      if (entry.exists)
+        return entry.ref.update({
+          commentsCount: entry.data().commentsCount + 1,
+        });
       else throw new Error("invalid-entry");
     })
+    .then(() => db.collection("comments").add(comment))
     .then(() => res.status(201).json(comment))
     .catch((err) => {
       console.error(err);
