@@ -27,6 +27,7 @@ const {
   createNotificationOnLike,
   createNotificationOnComment,
   deleteNotificationOnUnlike,
+  markNotificationsRead,
 } = require("./handlers/notifications");
 
 //Entries routes
@@ -47,7 +48,7 @@ app.post("/user/details", verifyAuth, updateUserDetails);
 app.post("/user/avatar", verifyAuth, uploadAvatar);
 
 //Notifications server functions
-// app.post("/notifications", verifyAuth, markNotificationRead);
+app.post("/notifications", verifyAuth, markNotificationsRead);
 exports.createNotificationOnLike = createNotificationOnLike;
 exports.deleteNotificationOnUnlike = deleteNotificationOnUnlike;
 exports.createNotificationOnComment = createNotificationOnComment;
