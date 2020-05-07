@@ -18,6 +18,7 @@ const {
   signUp,
   signIn,
   getUserInfo,
+  getUserDetails,
   updateUserDetails,
   uploadAvatar,
 } = require("./handlers/users");
@@ -38,13 +39,15 @@ app.post("/entry/:id/unlike", verifyAuth, unlikeEntry);
 app.delete("/entry/:id", verifyAuth, deleteEntry);
 
 //Users routes
+app.get("/user", verifyAuth, getUserInfo);
+app.get("/user/:username", getUserDetails);
 app.post("/signup", signUp);
 app.post("/signin", signIn);
-app.get("/user", verifyAuth, getUserInfo);
 app.post("/user/details", verifyAuth, updateUserDetails);
 app.post("/user/avatar", verifyAuth, uploadAvatar);
 
 //Notifications server functions
+// app.post("/notifications", verifyAuth, markNotificationRead);
 exports.createNotificationOnLike = createNotificationOnLike;
 exports.deleteNotificationOnUnlike = deleteNotificationOnUnlike;
 exports.createNotificationOnComment = createNotificationOnComment;

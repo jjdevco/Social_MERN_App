@@ -88,11 +88,56 @@ exports.getUserInfo = function (req, res) {
     .then((likes) => {
       user.likes = [];
       likes.forEach((like) => user.likes.push(like.data()));
+      return db
+        .collection("notifications")
+        .where("recipient", "==", req.user.username)
+        .orderBy("createdAt", "desc")
+        .get();
+    })
+    .then((notifications) => {
+      user.notifications = [];
+      notifications.forEach((notification) =>
+        user.notifications.push({
+          id: notification.id,
+          ...notification.data(),
+        })
+      );
       return res.json(user);
     })
     .catch((err) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
+    });
+};
+
+exports.getUserDetails = function (req, res) {
+  const { username } = req.params;
+  let user = {};
+  return db
+    .doc(`/users/${username}`)
+    .get()
+    .then((userRecord) => {
+      if (userRecord.exists) {
+        user = userRecord.data();
+        return db
+          .collection("entries")
+          .where("username", "==", username)
+          .orderBy("createdAt", "desc")
+          .get();
+      } else throw Error("invalid-username");
+    })
+    .then((entries) => {
+      user.entries = [];
+      entries.forEach((entry) =>
+        user.entries.push({ id: entry.id, ...entry.data() })
+      );
+      return res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      return err.message === "invalid-username"
+        ? res.status(404).json({ error: "User not found." })
+        : res.status(500).json({ error: err.code });
     });
 };
 
