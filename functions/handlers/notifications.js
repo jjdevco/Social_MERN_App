@@ -25,7 +25,7 @@ exports.createNotificationOnLike = functions.firestore
       .doc(`/entries/${like.data().entryId}`)
       .get()
       .then((entry) => {
-        if (entry.exists) {
+        if (entry.exists && entry.data().username !== like.data().username) {
           return db.doc(`/notifications/${like.id}`).set({
             entryId: entry.id,
             recipient: entry.data().username,
@@ -67,7 +67,7 @@ exports.createNotificationOnComment = functions.firestore
       .doc(`/entries/${comment.data().entryId}`)
       .get()
       .then((entry) => {
-        if (entry.exists) {
+        if (entry.exists && entry.data().username !== comment.data().username) {
           return db.doc(`/notifications/${comment.id}`).set({
             entryId: entry.id,
             recipient: entry.data().username,

@@ -1,3 +1,4 @@
+const functions = require("firebase-functions");
 const config = require("../utils/db-config");
 const { admin, db } = require("../utils/admin");
 const { auth } = require("../utils/client");
@@ -206,3 +207,54 @@ exports.uploadAvatar = function (req, res) {
 
   busboy.end(req.rawBody);
 };
+
+exports.onAvatarChange = functions.firestore
+  .document("/users/{id}")
+  .onUpdate((change) => {
+    const beforeData = change.before.data();
+    const afterData = change.after.data();
+    let batch = db.batch();
+
+    if (beforeData.avatarUrl !== afterData.avatarUrl)
+      return db
+        .collection("entries")
+        .where("username", "==", beforeData.username)
+        .get()
+        .then((entries) => {
+          entries.forEach((entry) => {
+            const entryDocument = db.doc(`/entries/${entry.id}`);
+            batch.update(entryDocument, { userAvatar: afterData.avatarUrl });
+          });
+
+          return db
+            .collection("comments")
+            .where("username", "==", beforeData.username)
+            .get();
+        })
+        .then((comments) => {
+          comments.forEach((comment) => {
+            const commentDocument = db.doc(`/comments/${comment.id}`);
+            batch.update(commentDocument, {
+              userAvatar: afterData.avatarUrl,
+            });
+          });
+
+          return batch.commit();
+        })
+        .then(() => {
+          const bucket = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/`;
+          const imgFileName = beforeData.avatarUrl
+            .split("?")[0]
+            .split(bucket)[1];
+
+          console.log(imgFileName);
+
+          if (imgFileName !== "default_avatar.png") {
+            return admin
+              .storage()
+              .bucket(config.storageBucket)
+              .file(imgFileName)
+              .delete();
+          } else return;
+        });
+  });
