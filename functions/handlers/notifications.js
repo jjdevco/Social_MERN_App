@@ -52,6 +52,7 @@ exports.deleteNotificationOnUnlike = functions.firestore
       .doc(`/notifications/${like.id}`)
       .delete()
       .then(() => {
+        console.log(`Deleted notification ${like.id}`);
         return;
       })
       .catch((err) => {

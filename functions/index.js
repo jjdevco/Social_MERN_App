@@ -12,6 +12,7 @@ const {
   likeEntry,
   unlikeEntry,
   deleteEntry,
+  onEntryDeleted,
 } = require("./handlers/entries");
 
 const {
@@ -52,6 +53,7 @@ app.post("/user/avatar", verifyAuth, uploadAvatar);
 app.post("/notifications", verifyAuth, markNotificationsRead);
 
 // Server functions
+exports.onEntryDeleted = onEntryDeleted;
 exports.onAvatarChange = onAvatarChange;
 exports.createNotificationOnLike = createNotificationOnLike;
 exports.deleteNotificationOnUnlike = deleteNotificationOnUnlike;

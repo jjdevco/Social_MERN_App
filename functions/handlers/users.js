@@ -247,14 +247,18 @@ exports.onAvatarChange = functions.firestore
             .split("?")[0]
             .split(bucket)[1];
 
-          console.log(imgFileName);
-
           if (imgFileName !== "default_avatar.png") {
+            console.log(`Deleted ${imgFileName}`);
             return admin
               .storage()
               .bucket(config.storageBucket)
               .file(imgFileName)
               .delete();
           } else return;
+        })
+        .catch((err) => {
+          console.error(err);
+          return;
         });
+    else return;
   });

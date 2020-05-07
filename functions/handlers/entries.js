@@ -1,3 +1,4 @@
+const functions = require("firebase-functions");
 const { db } = require("../utils/admin");
 
 exports.getAllEntries = function (req, res) {
@@ -91,12 +92,6 @@ exports.deleteEntry = function (req, res) {
         throw new Error("unauthorized");
       else return entryDocument.delete();
     })
-    .then(() => db.collection("comments").where("entryId", "==", id).get())
-    .then((comments) =>
-      comments.docs.forEach((comment) => comment.ref.delete())
-    )
-    .then(() => db.collection("likes").where("entryId", "==", id).get())
-    .then((likes) => likes.docs.forEach((like) => like.ref.delete()))
     .then(() => res.json({ message: "Entry deleted successfully..." }))
     .catch((err) => {
       console.error(err);
@@ -247,3 +242,34 @@ exports.unlikeEntry = function (req, res) {
             .json({ message: "something went wrong, try again later..." });
     });
 };
+
+exports.onEntryDeleted = functions.firestore
+  .document("entries/{id}")
+  .onDelete((snapshot, context) => {
+    const id = context.params.id;
+
+    return db
+      .collection("comments")
+      .where("entryId", "==", id)
+      .get()
+      .then((comments) =>
+        comments.docs.forEach((comment) => {
+          console.log(`Deleted comment ${comment.id}`);
+          return comment.ref.delete();
+        })
+      )
+      .then(() => db.collection("likes").where("entryId", "==", id).get())
+      .then((likes) =>
+        likes.docs.forEach((like) => {
+          console.log(`Deleted like ${like.id}`);
+          return like.ref.delete();
+        })
+      )
+      .then(() => {
+        return;
+      })
+      .catch((err) => {
+        console.error(err);
+        return;
+      });
+  });
