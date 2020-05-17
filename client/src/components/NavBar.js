@@ -15,20 +15,29 @@ import InputBase from "@material-ui/core/InputBase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  bar: {
+    borderWidth: "1px",
+    borderColor: "lightgray",
+    borderStyle: "none none solid none",
+    backgroundColor: "#FFFFFF",
+    color: "#000000",
+  },
+
+  toolbar: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     height: "56px",
-    padding: theme.spacing(0, 1),
+    // padding: theme.spacing(0, 2),
+
     [theme.breakpoints.only("sm")]: {
       margin: "0 auto",
       width: "580px",
     },
     [theme.breakpoints.up("md")]: {
       margin: "0 auto",
-      width: "940px",
+      width: "1000px",
     },
   },
 
@@ -55,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
     backgroundColor: fade("#ccc", 0.5),
     padding: theme.spacing(0, 2),
-    margin: theme.spacing(0, 1),
+    margin: theme.spacing(0, 2),
     [theme.breakpoints.up("sm")]: {
       width: "auto",
     },
@@ -122,11 +131,11 @@ function NavBar(props) {
   const medium = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
-    <AppBar color="transparent">
+    <AppBar className={classes.bar}>
       <Toolbar
         variant="dense"
         classes={{
-          root: classes.root,
+          root: classes.toolbar,
         }}
         disableGutters
       >
@@ -188,9 +197,6 @@ function NavBar(props) {
             </Button>
           </div>
         )}
-        <IconButton className={classes.iconButton} disableFocusRipple>
-          <FontAwesomeIcon icon="user-circle" size="lg" />
-        </IconButton>
       </Toolbar>
     </AppBar>
   );
