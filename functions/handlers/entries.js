@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
-const { db } = require("../utils/admin");
+const config = require("../utils/db-config");
+const { db, admin } = require("../utils/admin");
 
 exports.getAllEntries = function (req, res) {
   return db
@@ -52,30 +53,88 @@ exports.getEntry = function (req, res) {
 };
 
 exports.createEntry = function (req, res) {
-  const { body } = req.body;
   const { user } = req;
 
-  const newEntry = {
+  const os = require("os");
+  const fs = require("fs");
+  const path = require("path");
+  const BusBoy = require("busboy");
+
+  const busboy = new BusBoy({ headers: req.headers });
+
+  let media = {};
+
+  let newEntry = {
     username: user.username,
-    body,
     userAvatar: user.avatarUrl,
     createdAt: new Date().toISOString(),
     likesCount: 0,
     commentsCount: 0,
   };
 
-  return db
-    .collection("entries")
-    .add(newEntry)
-    .then((entry) => {
-      return res.json({ id: entry.id, ...newEntry });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ message: "something went wrong, try again later..." });
-    });
+  busboy.on("file", (fieldName, file, fileName, encoding, mimetype) => {
+    const validsFormatMedia = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "video/webm",
+      "video/ogg",
+      "video/mp4",
+      "video/3gp",
+    ];
+
+    if (validsFormatMedia.indexOf(mimetype) == -1) {
+      return res.status(400).json({ error: "Invalid file type submited." });
+    }
+
+    const extension = fileName.split(".")[fileName.split(".").length - 1];
+    media.fileName = `${Math.round(Math.random() * 100000000000)}.${extension}`;
+    media.filePath = path.join(os.tmpdir(), media.fileName);
+    media.mimetype = mimetype;
+
+    file.pipe(fs.createWriteStream(media.filePath));
+  });
+
+  busboy.on("field", (fieldname, val) => (newEntry[fieldname] = val));
+
+  busboy.on("finish", async () => {
+    if (!!media.fileName) {
+      await admin
+        .storage()
+        .bucket()
+        .upload(media.filePath, {
+          resumable: false,
+          metadata: {
+            metadata: {
+              contentType: media.mimetype,
+            },
+          },
+        })
+        .then(() => {
+          if (!!media.fileName)
+            newEntry[
+              "media"
+            ] = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${media.fileName}?alt=media`;
+        })
+        .catch((err) => {
+          console.error(err);
+          return res.status(500).json({ error: err.code });
+        });
+    }
+
+    return db
+      .collection("entries")
+      .add(newEntry)
+      .then((entry) => {
+        return res.json({ id: entry.id, ...newEntry });
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+      });
+  });
+
+  busboy.end(req.rawBody);
 };
 
 exports.deleteEntry = function (req, res) {
@@ -245,9 +304,8 @@ exports.unlikeEntry = function (req, res) {
 
 exports.onEntryDeleted = functions.firestore
   .document("entries/{id}")
-  .onDelete((snapshot, context) => {
+  .onDelete((entry, context) => {
     const id = context.params.id;
-
     return db
       .collection("comments")
       .where("entryId", "==", id)
@@ -265,6 +323,22 @@ exports.onEntryDeleted = functions.firestore
           return like.ref.delete();
         })
       )
+      .then(() => {
+        if (!!entry.data().media) {
+          const bucket = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/`;
+          const mediaFileName = entry
+            .data()
+            .media.split("?")[0]
+            .split(bucket)[1];
+
+          console.log(`Deleted ${mediaFileName}`);
+          return admin
+            .storage()
+            .bucket(config.storageBucket)
+            .file(mediaFileName)
+            .delete();
+        } else return;
+      })
       .then(() => {
         return;
       })
