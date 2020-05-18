@@ -45,9 +45,20 @@ const theme = createMuiTheme({
 });
 
 const useStyles = makeStyles((theme) => ({
+  app: {
+    minHeight: "100%",
+    display: "flex",
+    flexDirection: "row",
+  },
+
   main: {
+    display: "flex",
+    flexGrow: 1,
     maxWidth: "1000px",
     margin: "56px auto 0 auto",
+    [theme.breakpoints.down("sm")]: {
+      marginBottom: "56px",
+    },
   },
 }));
 
@@ -56,11 +67,10 @@ function App() {
   const classes = useStyles();
   return (
     <MuiThemeProvider theme={theme}>
-      <div className="App">
-        <Router>
-          <header>
-            <NavBar />
-          </header>
+      <Router>
+        <div className={classes.app}>
+          <NavBar />
+
           <main className={classes.main}>
             <Switch>
               <Route path="/" component={Home} exact />
@@ -68,9 +78,10 @@ function App() {
               <Route path="/signup" component={SignUp} />
             </Switch>
           </main>
-          <footer>{small && <BottomBar />}</footer>
-        </Router>
-      </div>
+
+          {small && <BottomBar />}
+        </div>
+      </Router>
     </MuiThemeProvider>
   );
 }
