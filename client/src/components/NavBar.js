@@ -29,10 +29,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     height: "56px",
-    // padding: theme.spacing(0, 2),
-
+    padding: theme.spacing(0, 1),
     [theme.breakpoints.only("sm")]: {
-      margin: "0 auto",
       width: "580px",
     },
     [theme.breakpoints.up("md")]: {
@@ -65,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: fade("#ccc", 0.5),
     padding: theme.spacing(0, 2),
     margin: theme.spacing(0, 2),
+    [theme.breakpoints.down("sm")]: {
+      marginLeft: theme.spacing(1),
+    },
     [theme.breakpoints.up("sm")]: {
       width: "auto",
     },

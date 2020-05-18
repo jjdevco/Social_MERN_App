@@ -8,7 +8,6 @@ import {
   faComment,
   faHeart,
   faShareSquare,
-  faClone,
 } from "@fortawesome/free-regular-svg-icons";
 
 const icons = [
@@ -16,7 +15,6 @@ const icons = [
   faSearch,
   faUserCircle,
   faComment,
-  faClone,
   faHeart,
   faShareSquare,
 ];
