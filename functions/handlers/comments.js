@@ -7,6 +7,7 @@ exports.getEntryComments = function (req, res) {
   return db
     .collection("comments")
     .where("entryId", "==", id)
+    .orderBy("createdAt", "desc")
     .get()
     .then((commentsData) => {
       if (!commentsData.empty)
