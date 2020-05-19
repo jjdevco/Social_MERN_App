@@ -12,12 +12,16 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 // APP Components
 import Media from "./Media";
+import Comment from "./Comment";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Date to Time util
 import formatDate from "../utils/timeago";
+
+// Api Services
+import api from "../services/api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: "50px",
     height: "50px",
-    margin: theme.spacing(2),
+    margin: theme.spacing(1, 2),
     border: `2px solid ${theme.palette.secondary.light}`,
     color: "#000",
   },
@@ -89,10 +93,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     paddingTop: theme.spacing(1),
+    color: theme.palette.secondary.main,
   },
 
   actionIcon: {
     padding: theme.spacing(1),
+    marginRight: "2px",
     fontSize: "20px",
     color: theme.palette.secondary.main,
     "&:hover": {
@@ -132,6 +138,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     flexGrow: 1,
   },
+
+  comments: {
+    display: "flex",
+    flexDirection: "column",
+  },
 }));
 
 function Card(props) {
@@ -151,7 +162,29 @@ function Card(props) {
   const [commentsFetched, setCommentsFetched] = useState(null);
   const [loadingComments, setLoadingComments] = useState(false);
 
-  const fetchComments = () => setLoadingComments(true);
+  const fetchComments = (id) => {
+    setLoadingComments(true);
+    api
+      .getEntryComments(id)
+      .then((comments) => {
+        setCommentsFetched(comments.data);
+        setLoadingComments(false);
+      })
+      .catch((err) => {
+        alert(err);
+        setLoadingComments(false);
+      });
+  };
+
+  const comments = commentsFetched
+    ? commentsFetched.map((comment, index) => (
+        <Comment
+          key={index}
+          data={comment}
+          last={index == commentsFetched.length - 1}
+        />
+      ))
+    : commentsFetched;
 
   return (
     <Container className={classes.root} component="div" disableGutters>
@@ -190,34 +223,38 @@ function Card(props) {
           {media && <Media src={media} />}
 
           <div className={classes.actions}>
-            <IconButton className={classes.actionIcon} aria-label="comment">
-              <FontAwesomeIcon icon={["far", "comment"]} />
+            <div>
+              <IconButton className={classes.actionIcon} aria-label="comment">
+                <FontAwesomeIcon icon={["far", "comment"]} />
+              </IconButton>
 
               {commentsCount > 0 && (
-                <Typography variant="caption">
-                  &nbsp; {commentsCount}
-                </Typography>
+                <Typography variant="caption">{commentsCount}</Typography>
               )}
-            </IconButton>
-            <IconButton className={classes.actionIcon} aria-label="like">
-              <FontAwesomeIcon icon={["far", "heart"]} />
+            </div>
 
+            <div>
               {likesCount > 0 && (
-                <Typography variant="caption">&nbsp; {likesCount}</Typography>
+                <Typography variant="caption">{likesCount}</Typography>
               )}
-            </IconButton>
+
+              <IconButton className={classes.actionIcon} aria-label="like">
+                <FontAwesomeIcon icon={["far", "heart"]} />
+              </IconButton>
+            </div>
+
             <IconButton className={classes.actionIcon} aria-label="share">
-              <FontAwesomeIcon icon={["far", "share-square"]} />
+              <FontAwesomeIcon icon="share" />
             </IconButton>
           </div>
         </div>
       </Container>
-      {commentsCount > 0 && !commentsFetched && (
+      {commentsCount > 0 && !comments && (
         <Container
           className={classes.showComments}
           component="div"
           disableGutters
-          onClick={fetchComments}
+          onClick={() => fetchComments(id)}
         >
           <FontAwesomeIcon
             className={classes.showCommentsIcon}
@@ -239,7 +276,7 @@ function Card(props) {
           )}
         </Container>
       )}
-      {commentsFetched}
+      <div className={classes.comments}>{comments}</div>
     </Container>
   );
 }

@@ -21,4 +21,8 @@ export default {
   getAllEntries() {
     return api.get("/entries");
   },
+
+  getEntryComments(id) {
+    return api.get(`/entry/${id}/comments`);
+  },
 };

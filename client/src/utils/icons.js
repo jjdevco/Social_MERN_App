@@ -4,12 +4,9 @@ import {
   faSearch,
   faUserCircle,
   faEllipsisV,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  faComment,
-  faHeart,
-  faShareSquare,
-} from "@fortawesome/free-regular-svg-icons";
+import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 
 const icons = [
   faHome,
@@ -17,7 +14,7 @@ const icons = [
   faUserCircle,
   faComment,
   faHeart,
-  faShareSquare,
+  faShare,
   faEllipsisV,
 ];
 
