@@ -5,17 +5,6 @@ const app = require("express")();
 const { verifyAuth } = require("./middlewares/auth");
 
 const {
-  getAllEntries,
-  getEntry,
-  createEntry,
-  commentOnEntry,
-  likeEntry,
-  unlikeEntry,
-  deleteEntry,
-  onEntryDeleted,
-} = require("./handlers/entries");
-
-const {
   signUp,
   signIn,
   getUserInfo,
@@ -24,6 +13,19 @@ const {
   uploadAvatar,
   onAvatarChange,
 } = require("./handlers/users");
+
+const {
+  getAllEntries,
+  getEntry,
+  createEntry,
+
+  likeEntry,
+  unlikeEntry,
+  deleteEntry,
+  onEntryDeleted,
+} = require("./handlers/entries");
+
+const { getEntryComments, commentOnEntry } = require("./handlers/comments");
 
 const {
   createNotificationOnLike,
@@ -46,10 +48,13 @@ app.use(function (req, res, next) {
 app.get("/entries", getAllEntries);
 app.get("/entry/:id", getEntry);
 app.post("/entry", verifyAuth, createEntry);
-app.post("/entry/:id/comment", verifyAuth, commentOnEntry);
 app.post("/entry/:id/like", verifyAuth, likeEntry);
 app.post("/entry/:id/unlike", verifyAuth, unlikeEntry);
 app.delete("/entry/:id", verifyAuth, deleteEntry);
+
+// Comments routes
+app.get("/entry/:id/comments", getEntryComments);
+app.post("/entry/:id/comment", verifyAuth, commentOnEntry);
 
 // Users routes
 app.get("/user", verifyAuth, getUserInfo);

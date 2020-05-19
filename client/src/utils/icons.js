@@ -3,6 +3,7 @@ import {
   faHome,
   faSearch,
   faUserCircle,
+  faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faComment,
@@ -17,6 +18,7 @@ const icons = [
   faComment,
   faHeart,
   faShareSquare,
+  faEllipsisV,
 ];
 
 export default icons;
