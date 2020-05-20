@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: "50px",
     height: "50px",
-    margin: theme.spacing(1, 2),
+    margin: theme.spacing(2, 2, 1, 2),
     border: `2px solid ${theme.palette.secondary.light}`,
     color: theme.palette.tertiary.contrastText,
   },
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     flexGrow: 1,
-    padding: theme.spacing(1, 2, 1, 1),
+    padding: theme.spacing(2, 2, 1, 1),
     maxWidth: "900px",
   },
 
@@ -82,6 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   text: {
+    margin: theme.spacing(0.5, 0),
     wordWrap: "break-word",
     lineHeight: 1.2,
     letterSpacing: "0.001em",
