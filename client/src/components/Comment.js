@@ -1,6 +1,9 @@
 import React from "react";
 import clsx from "clsx";
 
+// Date to Time util
+import formatDate from "../utils/timeago";
+
 // MUI Components
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -8,16 +11,13 @@ import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 
-// Date to Time util
-import formatDate from "../utils/timeago";
-
 const useStyles = makeStyles((theme) => ({
   card: {
     display: "flex",
     flexDirection: "row",
     cursor: "default",
     "&:hover": {
-      backgroundColor: "rgb(240,240,240)",
+      backgroundColor: theme.palette.background.main,
     },
   },
 
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     height: "50px",
     margin: theme.spacing(1, 2),
     border: `2px solid ${theme.palette.secondary.light}`,
-    color: "#000",
+    color: theme.palette.tertiary.contrastText,
   },
 
   divider: { flexGrow: 0, margin: "auto", minHeight: "10px", width: "3px" },
@@ -61,33 +61,13 @@ const useStyles = makeStyles((theme) => ({
 
   date: {
     wordWrap: "no-wrap",
-    color: "#707070",
+    color: theme.palette.tertiary.dark,
   },
 
   text: {
     wordWrap: "break-word",
     lineHeight: 1.2,
     letterSpacing: "0.001em",
-  },
-
-  actions: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: theme.spacing(1),
-    color: theme.palette.secondary.main,
-  },
-
-  actionIcon: {
-    padding: theme.spacing(1),
-    marginRight: "2px",
-    fontSize: "20px",
-    color: theme.palette.secondary.main,
-    "&:hover": {
-      backgroundColor: "rgba(79, 179, 191, 0.2)",
-      color: theme.palette.secondary.dark,
-    },
   },
 
   last: {

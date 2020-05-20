@@ -17,10 +17,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const useStyles = makeStyles((theme) => ({
   bar: {
     borderWidth: "1px",
-    borderColor: "lightgray",
+    borderColor: theme.palette.tertiary.main,
     borderStyle: "none none solid none",
-    backgroundColor: "#FFFFFF",
-    color: "#000000",
+    backgroundColor: theme.palette.background.light,
+    color: theme.palette.background.contrastText,
   },
 
   toolbar: {
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     borderStyle: "solid",
     borderColor: "transparent",
     borderRadius: "10px",
-    backgroundColor: fade("#ccc", 0.5),
+    backgroundColor: fade(theme.palette.background.dark, 0.6),
     padding: theme.spacing(0, 2),
     margin: theme.spacing(0, 2),
     [theme.breakpoints.down("sm")]: {
@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 
   searchActive: {
     borderColor: theme.palette.primary.main,
-    backgroundColor: fade("#ccc", 0.2),
+    backgroundColor: fade(theme.palette.background.dark, 0.3),
   },
 
   searchIcon: {
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "gray",
+    color: theme.palette.tertiary.dark,
   },
 
   searchIconActive: {

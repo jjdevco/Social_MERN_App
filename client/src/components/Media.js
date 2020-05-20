@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     margin: theme.spacing(1, 0),
     border: `2px solid ${theme.palette.secondary.light}`,
-    backgroundColor: "lightgray",
+    backgroundColor: theme.palette.background.main,
   },
 }));
 

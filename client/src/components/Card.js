@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+// Api Services
+import api from "../services/api";
+
+// Date to Time util
+import formatDate from "../utils/timeago";
+
 // MUI Components
-import { makeStyles } from "@material-ui/core/styles";
+import { fade, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
@@ -17,15 +23,9 @@ import Comment from "./Comment";
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// Date to Time util
-import formatDate from "../utils/timeago";
-
-// Api Services
-import api from "../services/api";
-
 const useStyles = makeStyles((theme) => ({
   root: {
-    borderColor: "lightgray",
+    borderColor: theme.palette.tertiary.main,
     borderWidth: "5px",
     borderStyle: "solid none solid none",
     cursor: "pointer",
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     "&:hover": {
-      backgroundColor: "rgb(240,240,240)",
+      backgroundColor: theme.palette.background.main,
     },
   },
 
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     height: "50px",
     margin: theme.spacing(1, 2),
     border: `2px solid ${theme.palette.secondary.light}`,
-    color: "#000",
+    color: theme.palette.tertiary.contrastText,
   },
 
   divider: { flexGrow: 1, margin: "auto", width: "3px" },
@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 
   date: {
     wordWrap: "no-wrap",
-    color: "#707070",
+    color: theme.palette.tertiary.dark,
   },
 
   text: {
@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "20px",
     color: theme.palette.secondary.main,
     "&:hover": {
-      backgroundColor: "rgba(79, 179, 191, 0.2)",
+      backgroundColor: fade(theme.palette.secondary.main, 0.2),
       color: theme.palette.secondary.dark,
     },
   },
@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     padding: theme.spacing(1, 0),
     "&:hover": {
-      backgroundColor: "rgb(240,240,240)",
+      backgroundColor: theme.palette.background.main,
     },
   },
 
@@ -124,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     height: "15px",
     minWidth: "86px",
-    color: "gray",
+    color: theme.palette.tertiary.main,
   },
 
   showCommentsText: {
@@ -181,7 +181,7 @@ function Card(props) {
         <Comment
           key={index}
           data={comment}
-          last={index == commentsFetched.length - 1}
+          last={index === commentsFetched.length - 1}
         />
       ))
     : commentsFetched;

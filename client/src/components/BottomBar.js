@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     top: "auto",
     bottom: 0,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.palette.background.light,
   },
 
   root: {

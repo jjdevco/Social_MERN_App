@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
 
     borderWidth: "2px",
-    borderColor: "lightgray",
+    borderColor: theme.palette.tertiary.main,
     borderStyle: "none solid none solid",
   },
 
