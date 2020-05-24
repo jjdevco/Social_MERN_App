@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
     width: "50px",
     height: "50px",
     margin: theme.spacing(1, 2),
-    border: `2px solid ${theme.palette.secondary.light}`,
-    color: theme.palette.tertiary.contrastText,
+    border: `2px solid ${theme.palette.primary.light}`,
+    color: theme.palette.primary.contrastText,
   },
 
   divider: { flexGrow: 0, margin: "auto", minHeight: "10px", width: "3px" },
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
   date: {
     wordWrap: "no-wrap",
-    color: theme.palette.tertiary.dark,
+    color: theme.palette.primary.dark,
   },
 
   text: {

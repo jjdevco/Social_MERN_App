@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import clsx from "clsx";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // MUI Components
 import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const useStyles = makeStyles((theme) => ({
   bar: {
     borderWidth: "1px",
-    borderColor: theme.palette.tertiary.main,
+    borderColor: theme.palette.secondary.main,
     borderStyle: "none none solid none",
     backgroundColor: theme.palette.background.light,
     color: theme.palette.background.contrastText,
@@ -30,12 +30,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     height: "56px",
     padding: theme.spacing(0, 1),
-    [theme.breakpoints.only("sm")]: {
-      width: "580px",
-    },
     [theme.breakpoints.up("md")]: {
       margin: "0 auto",
-      width: "1000px",
+      width: "950px",
     },
   },
 
@@ -50,11 +47,12 @@ const useStyles = makeStyles((theme) => ({
     width: "16px",
     "&:hover": {
       backgroundColor: "inherit",
+      color: theme.palette.primary.dark,
     },
   },
 
   search: {
-    width: "100%",
+    display: "flex",
     position: "relative",
     borderWidth: "2px",
     borderStyle: "solid",
@@ -63,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: fade(theme.palette.background.dark, 0.6),
     padding: theme.spacing(0, 2),
     margin: theme.spacing(0, 2),
+    transition: theme.transitions.create(),
     [theme.breakpoints.down("sm")]: {
       marginLeft: theme.spacing(1),
     },
@@ -72,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   searchActive: {
+    flexGrow: 1,
     borderColor: theme.palette.primary.main,
     backgroundColor: fade(theme.palette.background.dark, 0.3),
   },
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: theme.palette.tertiary.dark,
+    color: theme.palette.primary.dark,
   },
 
   searchIconActive: {
@@ -96,20 +96,13 @@ const useStyles = makeStyles((theme) => ({
 
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create("width"),
+    paddingLeft: `calc(1em + ${theme.spacing(2)}px)`,
     width: "100%",
     [theme.breakpoints.only("sm")]: {
-      width: "25ch",
-      "&:focus": {
-        width: "43ch",
-      },
+      minWidth: "27ch",
     },
     [theme.breakpoints.up("md")]: {
-      width: "34ch",
-      "&:focus": {
-        width: "52ch",
-      },
+      minWidth: "40ch",
     },
   },
 
@@ -128,8 +121,13 @@ const useStyles = makeStyles((theme) => ({
 function NavBar(props) {
   const theme = useTheme();
   const classes = useStyles();
+
+  const path = useLocation().pathname;
+  const authenticationRoute =
+    path === "/signin" || path === "/signup" ? true : false;
+  const small = useMediaQuery(theme.breakpoints.up("sm"));
+
   const [activeSearch, setActiveSearch] = useState(false);
-  const medium = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <AppBar className={classes.bar}>
@@ -174,7 +172,7 @@ function NavBar(props) {
             />
           </div>
         </div>
-        {medium && (
+        {!authenticationRoute && small && (
           <div>
             <Button
               className={classes.button}

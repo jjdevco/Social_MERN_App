@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    borderColor: theme.palette.tertiary.main,
+    borderColor: theme.palette.secondary.main,
     borderWidth: "5px",
     borderStyle: "solid none solid none",
     cursor: "pointer",
@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
     width: "50px",
     height: "50px",
     margin: theme.spacing(2, 2, 1, 2),
-    border: `2px solid ${theme.palette.secondary.light}`,
-    color: theme.palette.tertiary.contrastText,
+    border: `2px solid ${theme.palette.primary.light}`,
+    color: theme.palette.primary.contrastText,
   },
 
   divider: { flexGrow: 1, margin: "auto", width: "3px" },
@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 
   date: {
     wordWrap: "no-wrap",
-    color: theme.palette.tertiary.dark,
+    color: theme.palette.primary.dark,
   },
 
   text: {
@@ -94,17 +94,23 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     paddingTop: theme.spacing(1),
-    color: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
+  },
+
+  actionContainer: {
+    display: "flex",
+    flexWrap: "no-wrap",
+    alignItems: "center",
   },
 
   actionIcon: {
     padding: theme.spacing(1),
     marginRight: "2px",
     fontSize: "20px",
-    color: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
     "&:hover": {
-      backgroundColor: fade(theme.palette.secondary.main, 0.2),
-      color: theme.palette.secondary.dark,
+      backgroundColor: fade(theme.palette.primary.main, 0.2),
+      color: theme.palette.primary.dark,
     },
   },
 
@@ -125,12 +131,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     height: "15px",
     minWidth: "86px",
-    color: theme.palette.tertiary.main,
+    color: theme.palette.secondary.main,
   },
 
   showCommentsText: {
     margin: theme.spacing(0, 1),
-    color: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
   },
 
   commentsLoading: {
@@ -224,7 +230,7 @@ function Card(props) {
           {media && <Media src={media} />}
 
           <div className={classes.actions}>
-            <div>
+            <div className={classes.actionContainer}>
               <IconButton className={classes.actionIcon} aria-label="comment">
                 <FontAwesomeIcon icon={["far", "comment"]} />
               </IconButton>
@@ -234,7 +240,7 @@ function Card(props) {
               )}
             </div>
 
-            <div>
+            <div className={classes.actionContainer}>
               {likesCount > 0 && (
                 <Typography variant="caption">{likesCount}</Typography>
               )}

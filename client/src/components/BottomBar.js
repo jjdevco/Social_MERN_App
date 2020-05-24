@@ -1,7 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // MUI Components
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -44,8 +46,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function BottomBar(props) {
+  const theme = useTheme();
   const classes = useStyles();
-  return (
+  const path = useLocation().pathname;
+  const authenticationRoute =
+    path === "/signin" || path === "/signup" ? true : false;
+  const small = useMediaQuery(theme.breakpoints.only("xs"));
+
+  return !authenticationRoute && small ? (
     <AppBar
       color="transparent"
       classes={{
@@ -81,6 +89,8 @@ function BottomBar(props) {
         </Button>
       </Toolbar>
     </AppBar>
+  ) : (
+    ""
   );
 }
 

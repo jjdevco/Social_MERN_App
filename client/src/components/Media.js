@@ -8,7 +8,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: theme.spacing(1, 0),
-    border: `2px solid ${theme.palette.secondary.light}`,
+    border: `2px solid ${theme.palette.primary.light}`,
     backgroundColor: theme.palette.background.main,
   },
 }));

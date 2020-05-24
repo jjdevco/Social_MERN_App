@@ -1,5 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { createBrowserHistory } from "history";
+
+// App Theme
+import { appTheme, TransitionPage } from "./theme";
 
 // CSS styles
 import "./styles/app.css";
@@ -9,8 +13,6 @@ import {
   ThemeProvider as MuiThemeProvider,
   makeStyles,
 } from "@material-ui/core/styles/";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 // Font Awesome Icons
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -27,71 +29,30 @@ import BottomBar from "./components/BottomBar";
 
 library.add(...icons);
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#ff6659",
-      main: "#d32f2f",
-      dark: "#9a0007",
-      contrastText: "#fff",
-    },
-    secondary: {
-      light: "#4fb3bf",
-      main: "#00838f",
-      dark: "#005662",
-      contrastText: "#fff",
-    },
-    tertiary: {
-      light: "#cfd8dc",
-      main: "#90a4ae",
-      dark: "#607d8b",
-      contrastText: "#000",
-    },
-    background: {
-      light: "#fff",
-      main: "#f0f0f0",
-      dark: "#dcdcdc",
-      contrastText: "#000",
-    },
-  },
-});
-
 const useStyles = makeStyles((theme) => ({
   app: {
     minHeight: "100%",
     display: "flex",
     flexDirection: "row",
   },
-
-  main: {
-    display: "flex",
-    flexGrow: 1,
-    maxWidth: "1000px",
-    margin: "56px auto 0 auto",
-    [theme.breakpoints.down("sm")]: {
-      marginBottom: "56px",
-    },
-  },
 }));
 
 function App() {
-  const small = useMediaQuery(theme.breakpoints.down("sm"));
+  const history = createBrowserHistory();
   const classes = useStyles();
   return (
-    <MuiThemeProvider theme={theme}>
-      <Router>
+    <MuiThemeProvider theme={appTheme}>
+      <Router history={history}>
         <div className={classes.app}>
           <NavBar />
 
-          <main className={classes.main}>
-            <Switch>
-              <Route path="/" component={Home} exact />
-              <Route path="/signin" component={SignIn} />
-              <Route path="/signup" component={SignUp} />
-            </Switch>
-          </main>
+          <Switch>
+            <Route path="/" component={TransitionPage(Home)} exact />
+            <Route path="/signin" component={TransitionPage(SignIn)} />
+            <Route path="/signup" component={TransitionPage(SignUp)} />
+          </Switch>
 
-          {small && <BottomBar />}
+          <BottomBar />
         </div>
       </Router>
     </MuiThemeProvider>

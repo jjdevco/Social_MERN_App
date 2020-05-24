@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import clsx from "clsx";
 
 // API Sercives func
 import api from "../services/api";
@@ -17,10 +18,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     flexGrow: 1,
-
     borderWidth: "2px",
-    borderColor: theme.palette.tertiary.main,
+    borderColor: theme.palette.secondary.main,
     borderStyle: "none solid none solid",
+  },
+
+  notAuth: {
+    marginBottom: "56px",
   },
 
   loading: {
@@ -30,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
 
 function Home(props) {
   const classes = useStyles();
+
+  // Validate auth
+  const authenticated = null;
+
   const [entries, setEntries] = useState(null);
 
   useEffect(() => {
@@ -43,7 +51,11 @@ function Home(props) {
   );
 
   return (
-    <Container className={classes.container} component="div" disableGutters>
+    <Container
+      className={clsx([classes.container, !authenticated && classes.notAuth])}
+      component="div"
+      disableGutters
+    >
       <h1>Home</h1>
       {recentEntries}
     </Container>

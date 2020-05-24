@@ -10,11 +10,11 @@ const api = axios.create({
 });
 
 export default {
-  signup(userData) {
+  signUp(userData) {
     return api.post("/signup", userData);
   },
 
-  signin(userData) {
+  signIn(userData) {
     return api.post("/signin", userData);
   },
 
