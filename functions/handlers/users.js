@@ -15,11 +15,12 @@ exports.signIn = function (req, res) {
           .then((token) => res.json({ token: token }))
           .catch((err) => {
             console.error(err);
-            return err.code === "auth/user-not-found" ||
-              err.code === "auth/wrong-password"
+            return err.code === "auth/user-not-found"
               ? res
                   .status(403)
-                  .json({ general: "Wrong credentials, please try again...." })
+                  .json({ email: "This email doesn't match our records." })
+              : err.code === "auth/wrong-password"
+              ? res.status(403).json({ password: "This password is invalid." })
               : res.status(500).json({ error: err.code });
           })
   );
