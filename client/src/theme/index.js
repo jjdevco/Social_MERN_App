@@ -1,7 +1,8 @@
 import React from "react";
+
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { makeStyles } from "@material-ui/core/styles/";
-import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+import CSSTransition from "react-transition-group/CSSTransition";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -38,16 +39,16 @@ export const appTheme = createMuiTheme({
 export const TransitionPage = (Page, previous) => {
   const classes = useStyles();
   return (props) => (
-    <CSSTransitionGroup
-      className={classes.main}
-      component="main"
-      transitionAppear={true}
-      transitionAppearTimeout={600}
-      transitionEnterTimeout={600}
-      transitionLeaveTimeout={600}
-      transitionName="fade"
+    <CSSTransition
+      in={true}
+      appear={true}
+      timeout={600}
+      classNames="fade"
+      unmountOnExit
     >
-      <Page {...props} />
-    </CSSTransitionGroup>
+      <main className={classes.main}>
+        <Page {...props} />
+      </main>
+    </CSSTransition>
   );
 };

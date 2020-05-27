@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { createBrowserHistory } from "history";
 
 // App Theme
 import { appTheme, TransitionPage } from "./theme";
@@ -38,11 +37,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
-  const history = createBrowserHistory();
   const classes = useStyles();
   return (
     <MuiThemeProvider theme={appTheme}>
-      <Router history={history}>
+      <Router>
         <div className={classes.app}>
           <NavBar />
 

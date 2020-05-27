@@ -41,7 +41,10 @@ function Home(props) {
   const [entries, setEntries] = useState(null);
 
   useEffect(() => {
-    api.getAllEntries().then((entries) => setEntries(entries.data));
+    api
+      .getAllEntries()
+      .then((entries) => setEntries(entries.data))
+      .catch((err) => console.log(err));
   }, []);
 
   let recentEntries = entries ? (
