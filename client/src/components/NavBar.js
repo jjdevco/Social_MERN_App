@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import { Link, useLocation } from "react-router-dom";
+import { connect } from "react-redux";
 
 // MUI Components
 import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
@@ -118,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar(props) {
+function NavBar({ authenticated, ...props }) {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -172,7 +173,7 @@ function NavBar(props) {
             />
           </div>
         </div>
-        {!authenticationRoute && small && (
+        {!authenticated && !authenticationRoute && small && (
           <div>
             <Button
               className={classes.button}
@@ -201,4 +202,8 @@ function NavBar(props) {
   );
 }
 
-export default NavBar;
+const mapStateToProps = (state) => ({
+  authenticated: state.user.authenticated,
+});
+
+export default connect(mapStateToProps)(NavBar);

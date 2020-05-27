@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { connect } from "react-redux";
 
 // MUI Components
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BottomBar(props) {
+function BottomBar({ authenticated, ...props }) {
   const theme = useTheme();
   const classes = useStyles();
   const path = useLocation().pathname;
@@ -53,7 +54,7 @@ function BottomBar(props) {
     path === "/signin" || path === "/signup" ? true : false;
   const small = useMediaQuery(theme.breakpoints.only("xs"));
 
-  return !authenticationRoute && small ? (
+  return !authenticated && !authenticationRoute && small ? (
     <AppBar
       color="transparent"
       classes={{
@@ -94,4 +95,8 @@ function BottomBar(props) {
   );
 }
 
-export default BottomBar;
+const mapStateToProps = (state) => ({
+  authenticated: state.user.authenticated,
+});
+
+export default connect(mapStateToProps)(BottomBar);

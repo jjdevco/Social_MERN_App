@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { connect } from "react-redux";
+import { authenticate } from "../store/actions/userActions";
 
 // MUI Components
 import { makeStyles } from "@material-ui/core/styles";
@@ -95,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignIn(props) {
+function SignIn({ authenticate, ...props }) {
   const history = useHistory();
   const classes = useStyles();
   const [email, setEmail] = useState("");
@@ -129,10 +131,10 @@ function SignIn(props) {
   const submit = () => {
     if (email !== "" && password !== "") {
       setLoading(true);
-      api
-        .signIn({ email, password })
+      api()
+        .user.signIn({ email, password })
         .then(({ data }) => {
-          localStorage.setItem("authToken", `Bearer ${data.token}`);
+          authenticate(data.token);
           return history.push("/");
         })
         .catch((error) => {
@@ -225,4 +227,8 @@ function SignIn(props) {
   );
 }
 
-export default SignIn;
+const mapActionsToProps = {
+  authenticate,
+};
+
+export default connect(null, mapActionsToProps)(SignIn);

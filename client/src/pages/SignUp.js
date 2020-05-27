@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { connect } from "react-redux";
+import { authenticate } from "../store/actions/userActions";
 
 // MUI Components
 import { makeStyles } from "@material-ui/core/styles";
@@ -95,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignUp(props) {
+function SignUp({ authenticate, ...props }) {
   const history = useHistory();
   const classes = useStyles();
   const [username, setUsername] = useState("");
@@ -160,10 +162,10 @@ function SignUp(props) {
       repeatPassword !== ""
     ) {
       setLoading(true);
-      api
-        .signUp({ username, email, password, repeatPassword })
+      api()
+        .user.signUp({ username, email, password, repeatPassword })
         .then(({ data }) => {
-          localStorage.setItem("authToken", `Bearer ${data.token}`);
+          authenticate(data.token);
           return history.push("/");
         })
         .catch((error) => {
@@ -295,4 +297,8 @@ function SignUp(props) {
   );
 }
 
-export default SignUp;
+const mapActionsToProps = {
+  authenticate,
+};
+
+export default connect(null, mapActionsToProps)(SignUp);
