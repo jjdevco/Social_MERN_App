@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import clsx from "clsx";
 
 // API Sercives func
@@ -32,17 +33,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Home(props) {
+function Home({ authenticated, ...props }) {
   const classes = useStyles();
-
-  // Validate auth
-  const authenticated = null;
-
   const [entries, setEntries] = useState(null);
 
   useEffect(() => {
-    api
-      .getAllEntries()
+    api()
+      .entries.getAll()
       .then((entries) => setEntries(entries.data))
       .catch((err) => console.log(err));
   }, []);
@@ -65,4 +62,8 @@ function Home(props) {
   );
 }
 
-export default Home;
+const mapStateToProps = (state) => ({
+  authenticated: state.user.authenticated,
+});
+
+export default connect(mapStateToProps)(Home);

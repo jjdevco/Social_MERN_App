@@ -1,28 +1,48 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: `http://localhost:5000/socialapp-94844/us-central1/api`,
-  withCredentials: false,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-});
+export default (token = null) => {
+  const baseURL = `http://localhost:5000/socialapp-94844/us-central1/api`;
+  const defaultOptions = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  };
 
-export default {
-  signUp(userData) {
-    return api.post("/signup", userData);
-  },
+  return {
+    user: {
+      signUp: (data, options = {}) =>
+        axios.post(`${baseURL}/signup`, data, {
+          ...defaultOptions,
+          ...options,
+        }),
 
-  signIn(userData) {
-    return api.post("/signin", userData);
-  },
+      signIn: (data, options = {}) =>
+        axios.post(`${baseURL}/signin`, data, {
+          ...defaultOptions,
+          ...options,
+        }),
 
-  getAllEntries() {
-    return api.get("/entries");
-  },
+      getFullData: (options = {}) =>
+        axios.get(`${baseURL}/user`, {
+          ...defaultOptions,
+          ...options,
+        }),
+    },
 
-  getEntryComments(id) {
-    return api.get(`/entry/${id}/comments`);
-  },
+    entries: {
+      getAll: (options = {}) =>
+        axios.get(`${baseURL}//entries`, {
+          ...defaultOptions,
+          ...options,
+        }),
+
+      getComments: (id, options = {}) =>
+        axios.get(`${baseURL}//entry/${id}/comments`, {
+          ...defaultOptions,
+          ...options,
+        }),
+    },
+  };
 };

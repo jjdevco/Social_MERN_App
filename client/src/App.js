@@ -1,11 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-// App Theme
-import { appTheme, TransitionPage } from "./theme";
+// Redux Store
+import { Provider } from "react-redux";
+import store from "./store";
 
-// CSS styles
+// Middlewares
+import AuthRoute from "./middleware/AuthRoute";
+
+// App Theme
 import "./styles/app.css";
+import { appTheme } from "./theme";
 
 // MUI Components
 import {
@@ -23,6 +28,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 
 // App Components
+import { TransitionPage } from "./theme";
 import NavBar from "./components/NavBar";
 import BottomBar from "./components/BottomBar";
 
@@ -40,19 +46,21 @@ function App() {
   const classes = useStyles();
   return (
     <MuiThemeProvider theme={appTheme}>
-      <Router>
-        <div className={classes.app}>
-          <NavBar />
+      <Provider store={store}>
+        <Router>
+          <div className={classes.app}>
+            <NavBar />
 
-          <Switch>
-            <Route path="/" component={TransitionPage(Home)} exact />
-            <Route path="/signin" component={TransitionPage(SignIn)} />
-            <Route path="/signup" component={TransitionPage(SignUp)} />
-          </Switch>
+            <Switch>
+              <Route path="/" component={TransitionPage(Home)} exact />
+              <AuthRoute path="/signin" component={TransitionPage(SignIn)} />
+              <AuthRoute path="/signup" component={TransitionPage(SignUp)} />
+            </Switch>
 
-          <BottomBar />
-        </div>
-      </Router>
+            <BottomBar />
+          </div>
+        </Router>
+      </Provider>
     </MuiThemeProvider>
   );
 }

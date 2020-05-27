@@ -171,8 +171,8 @@ function Card(props) {
 
   const fetchComments = (id) => {
     setLoadingComments(true);
-    api
-      .getEntryComments(id)
+    api()
+      .entries.getComments(id)
       .then((comments) => {
         setCommentsFetched(comments.data);
         setLoadingComments(false);
