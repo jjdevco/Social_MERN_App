@@ -49,10 +49,12 @@ const useStyles = makeStyles((theme) => ({
 
   header: {
     display: "flex",
+    alignItems: "center",
   },
 
   username: {
     fontWeight: "bold",
+    color: theme.palette.primary.main,
     marginRight: theme.spacing(1),
     "&:hover": {
       textDecoration: "underline",
@@ -60,14 +62,21 @@ const useStyles = makeStyles((theme) => ({
   },
 
   date: {
-    wordWrap: "no-wrap",
     color: theme.palette.primary.dark,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 
   text: {
     wordWrap: "break-word",
     lineHeight: 1.2,
     letterSpacing: "0.001em",
+    marginRight: theme.spacing(2),
+  },
+
+  first: {
+    paddingTop: theme.spacing(1),
   },
 
   last: {
@@ -75,12 +84,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Comment(props) {
+function Comment({ first, last, ...props }) {
   const classes = useStyles();
 
   const { username, userAvatar, body, createdAt } = props.data;
-
-  const last = props.last;
 
   return (
     <Container
@@ -88,8 +95,14 @@ function Comment(props) {
       component="div"
       disableGutters
     >
-      <div className={classes.avatarContainer}>
-        <Divider className={classes.divider} orientation="vertical" flexItem />
+      <div className={clsx(classes.avatarContainer, first && classes.first)}>
+        {!first && (
+          <Divider
+            className={classes.divider}
+            orientation="vertical"
+            flexItem
+          />
+        )}
         <Avatar
           className={classes.avatar}
           aria-label="avatar"
@@ -111,12 +124,13 @@ function Comment(props) {
           <Typography className={classes.username} variant="subtitle1">
             @{username}
           </Typography>
-          <Typography className={classes.date} variant="subtitle1">
+
+          <Typography className={classes.date} variant="caption">
             - {formatDate(createdAt)}
           </Typography>
         </div>
 
-        <Typography className={classes.text} variant="body1">
+        <Typography className={classes.text} align="left" variant="body1">
           {body}
         </Typography>
       </div>

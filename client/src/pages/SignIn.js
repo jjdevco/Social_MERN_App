@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { authenticate } from "../store/actions/userActions";
 
@@ -99,6 +99,7 @@ const useStyles = makeStyles((theme) => ({
 
 function SignIn({ authenticate, ...props }) {
   const history = useHistory();
+  const location = useLocation();
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -131,11 +132,13 @@ function SignIn({ authenticate, ...props }) {
   const submit = () => {
     if (email !== "" && password !== "") {
       setLoading(true);
-      api()
-        .user.signIn({ email, password })
+      api.user
+        .signIn({ email, password })
         .then(({ data }) => {
           authenticate(data.token);
-          return history.push("/");
+          return location.state.redirect
+            ? history.push(location.state.redirect)
+            : history.push("/");
         })
         .catch((error) => {
           setLoading(false);
@@ -199,7 +202,15 @@ function SignIn({ authenticate, ...props }) {
           <Typography className={classes.text}>
             Don't have an account?
           </Typography>
-          <Link className={classes.link} to="/signup">
+          <Link
+            className={classes.link}
+            to={{
+              pathname: "/signup",
+              state: location.state
+                ? { redirect: location.state.redirect }
+                : null,
+            }}
+          >
             Sign Up here.
           </Link>
         </div>

@@ -7,25 +7,30 @@ import CardMedia from "@material-ui/core/CardMedia";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(1, 0),
     border: `2px solid ${theme.palette.primary.light}`,
     backgroundColor: theme.palette.background.main,
   },
+  media: {
+    objectFit: "cover",
+  },
 }));
 
-function Media(props) {
+function Media({ height = 250, ...props }) {
   const classes = useStyles();
 
-  const imageExt = /(?:([^:/?#]+):)?(?:([^/?#]*))?([^?#]*\.(?:jpe?g|gif|png))(?:\?([^#]*))?(?:#(.*))?/.test(
+  const isImage = /(?:([^:/?#]+):)?(?:([^/?#]*))?([^?#]*\.(?:jpe?g|gif|png))(?:\?([^#]*))?(?:#(.*))?/.test(
     props.src
   );
 
   return (
     <Card className={classes.root}>
       <CardMedia
+        className={classes.media}
+        style={{}}
         src={props.src}
-        component={imageExt ? "img" : "video"}
-        controls={imageExt ? false : true}
+        height={height}
+        component={isImage ? "img" : "video"}
+        controls={isImage ? false : true}
       />
     </Card>
   );

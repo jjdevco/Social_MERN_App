@@ -33,6 +33,11 @@ export const appTheme = createMuiTheme({
       dark: "#dcdcdc",
       contrastText: "#000",
     },
+    error: {
+      light: "#ff6659",
+      main: "#d32f2f",
+      dark: "#9a0007",
+    },
   },
 });
 

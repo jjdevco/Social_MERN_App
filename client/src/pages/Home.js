@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
 import clsx from "clsx";
-
-// API Sercives func
-import api from "../services/api";
+import { connect } from "react-redux";
+import { getEntries } from "../store/actions/entriesActions";
 
 //MUI Components
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,6 +10,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 // APP Components
 import Card from "../components/Card";
+import CardDetails from "../components/CardDetails";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -19,13 +18,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     flexGrow: 1,
-    borderWidth: "2px",
-    borderColor: theme.palette.secondary.main,
-    borderStyle: "none solid none solid",
+    padding: theme.spacing(0, 1),
   },
 
-  notAuth: {
-    marginBottom: "56px",
+  bottomBar: {
+    [theme.breakpoints.only("xs")]: {
+      marginBottom: "56px",
+    },
   },
 
   loading: {
@@ -33,37 +32,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Home({ authenticated, ...props }) {
+function Home({ authenticated, getEntries, entries, entry, ...props }) {
   const classes = useStyles();
-  const [entries, setEntries] = useState(null);
 
   useEffect(() => {
-    api()
-      .entries.getAll()
-      .then((entries) => setEntries(entries.data))
-      .catch((err) => console.log(err));
-  }, []);
+    getEntries();
+  }, [getEntries, entry]);
 
-  let recentEntries = entries ? (
-    entries.map((entry) => <Card key={entry.id} data={entry} />)
-  ) : (
-    <CircularProgress className={classes.loading} color="secondary" />
-  );
+  let recentEntries =
+    entries.length > 0 ? (
+      entries.map((entry) => <Card key={entry.id} data={entry} />)
+    ) : (
+      <CircularProgress className={classes.loading} color="secondary" />
+    );
 
   return (
     <Container
-      className={clsx([classes.container, !authenticated && classes.notAuth])}
+      className={clsx([classes.container, !authenticated && classes.bottomBar])}
       component="div"
       disableGutters
     >
       <h1>Home</h1>
       {recentEntries}
+      <CardDetails />
     </Container>
   );
 }
 
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
+  entries: state.entry.entries,
+  entry: state.entry.data,
 });
 
-export default connect(mapStateToProps)(Home);
+const mapActionsToProps = {
+  getEntries,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Home);

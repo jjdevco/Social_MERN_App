@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-
-// Api Services
-import api from "../services/api";
+import React from "react";
+import { connect } from "react-redux";
+import { openModal } from "../store/actions/entriesActions";
 
 // Date to Time util
 import formatDate from "../utils/timeago";
@@ -14,35 +12,38 @@ import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 // APP Components
 import Media from "./Media";
-import Comment from "./Comment";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    margin: theme.spacing(1, 0),
     borderColor: theme.palette.secondary.main,
-    borderWidth: "5px",
-    borderStyle: "solid none solid none",
-    cursor: "pointer",
+    borderWidth: "3px",
+    borderStyle: "solid",
+    borderRadius: "5px",
+    boxShadow: theme.shadows[3],
+    transition: theme.transitions.create(),
+    "&:hover": {
+      backgroundColor: fade(theme.palette.background.main, 0.35),
+      borderColor: theme.palette.primary.main,
+    },
   },
 
   card: {
     display: "flex",
-    flexDirection: "row",
-    "&:hover": {
-      backgroundColor: theme.palette.background.main,
-    },
+    cursor: "pointer",
   },
 
   avatarContainer: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    maxWidth: "90px",
   },
 
   avatar: {
@@ -60,32 +61,46 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     flexGrow: 1,
-    padding: theme.spacing(2, 2, 1, 1),
-    maxWidth: "900px",
-  },
-
-  header: {
-    display: "flex",
   },
 
   username: {
+    marginTop: theme.spacing(1),
     fontWeight: "bold",
-    marginRight: theme.spacing(1),
+    color: theme.palette.primary.main,
     "&:hover": {
       textDecoration: "underline",
     },
   },
 
   date: {
+    color: theme.palette.primary.light,
+    fontWeight: "bold",
     wordWrap: "no-wrap",
-    color: theme.palette.primary.dark,
+  },
+
+  entryContent: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "start",
   },
 
   text: {
-    margin: theme.spacing(0.5, 0),
+    flexGrow: 1,
+    margin: theme.spacing(1, 0, 2, 0),
     wordWrap: "break-word",
     lineHeight: 1.2,
     letterSpacing: "0.001em",
+    [theme.breakpoints.only("xs")]: {
+      marginRight: theme.spacing(3),
+    },
+  },
+
+  media: {
+    minWidth: "160px",
+    margin: theme.spacing(1.5),
+    [theme.breakpoints.only("xs")]: {
+      display: "none",
+    },
   },
 
   actions: {
@@ -93,8 +108,11 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: theme.spacing(1),
+    flexGrow: 1,
+    padding: theme.spacing(0, 3),
     color: theme.palette.primary.main,
+    borderTop: `solid 1px ${theme.palette.background.dark}`,
+    backgroundColor: theme.palette.background.main,
   },
 
   actionContainer: {
@@ -109,54 +127,15 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "20px",
     color: theme.palette.primary.main,
     "&:hover": {
-      backgroundColor: fade(theme.palette.primary.main, 0.2),
+      background: "none",
       color: theme.palette.primary.dark,
     },
   },
-
-  showComments: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    padding: theme.spacing(1, 0),
-    "&:hover": {
-      backgroundColor: theme.palette.background.main,
-    },
-  },
-
-  showCommentsIcon: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "15px",
-    minWidth: "86px",
-    color: theme.palette.secondary.main,
-  },
-
-  showCommentsText: {
-    margin: theme.spacing(0, 1),
-    color: theme.palette.primary.main,
-  },
-
-  commentsLoading: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    flexGrow: 1,
-  },
-
-  comments: {
-    display: "flex",
-    flexDirection: "column",
-  },
 }));
 
-function Card(props) {
+function Card({ openModal, ...props }) {
   const classes = useStyles();
-
   const {
-    id,
     username,
     userAvatar,
     body,
@@ -166,36 +145,14 @@ function Card(props) {
     createdAt,
   } = props.data;
 
-  const [commentsFetched, setCommentsFetched] = useState(null);
-  const [loadingComments, setLoadingComments] = useState(false);
-
-  const fetchComments = (id) => {
-    setLoadingComments(true);
-    api()
-      .entries.getComments(id)
-      .then((comments) => {
-        setCommentsFetched(comments.data);
-        setLoadingComments(false);
-      })
-      .catch((err) => {
-        alert(err);
-        setLoadingComments(false);
-      });
-  };
-
-  const comments = commentsFetched
-    ? commentsFetched.map((comment, index) => (
-        <Comment
-          key={index}
-          data={comment}
-          last={index === commentsFetched.length - 1}
-        />
-      ))
-    : commentsFetched;
-
   return (
     <Container className={classes.root} component="div" disableGutters>
-      <Container className={classes.card} component="div" disableGutters>
+      <Container
+        className={classes.card}
+        component="div"
+        disableGutters
+        onClick={() => openModal({ ...props.data })}
+      >
         <div className={classes.avatarContainer}>
           <Avatar
             className={classes.avatar}
@@ -205,87 +162,66 @@ function Card(props) {
           >
             {username.charAt(0).toUpperCase()}
           </Avatar>
-          {commentsCount > 0 && (
-            <Divider
-              className={classes.divider}
-              orientation="vertical"
-              flexItem
-            />
-          )}
+
+          <Divider
+            className={classes.divider}
+            orientation="vertical"
+            flexItem
+          />
         </div>
         <div className={classes.content}>
-          <div className={classes.header}>
-            <Typography className={classes.username} variant="subtitle1">
-              @{username}
-            </Typography>
-            <Typography className={classes.date} variant="subtitle1">
-              - {formatDate(createdAt)}
-            </Typography>
-          </div>
-
-          <Typography className={classes.text} variant="body1">
-            {body}
-          </Typography>
-
-          {media && <Media src={media} />}
-
-          <div className={classes.actions}>
-            <div className={classes.actionContainer}>
-              <IconButton className={classes.actionIcon} aria-label="comment">
-                <FontAwesomeIcon icon={["far", "comment"]} />
-              </IconButton>
-
-              {commentsCount > 0 && (
-                <Typography variant="caption">{commentsCount}</Typography>
-              )}
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div style={{ flexGrow: 1 }}>
+              <Typography className={classes.username} variant="h6">
+                @{username}
+              </Typography>
+              <Typography className={classes.date} variant="body2">
+                {formatDate(createdAt)}
+              </Typography>
+              <div className={classes.entryContent}>
+                <Typography className={classes.text} variant="body1">
+                  {body}
+                </Typography>
+                {media && (
+                  <div className={classes.media}>
+                    <Media src={media} height={120} />
+                  </div>
+                )}
+              </div>
             </div>
-
-            <div className={classes.actionContainer}>
-              {likesCount > 0 && (
-                <Typography variant="caption">{likesCount}</Typography>
-              )}
-
-              <IconButton className={classes.actionIcon} aria-label="like">
-                <FontAwesomeIcon icon={["far", "heart"]} />
-              </IconButton>
-            </div>
-
-            <IconButton className={classes.actionIcon} aria-label="share">
-              <FontAwesomeIcon icon="share" />
-            </IconButton>
           </div>
         </div>
       </Container>
-      {commentsCount > 0 && !comments && (
-        <Container
-          className={classes.showComments}
-          component="div"
-          disableGutters
-          onClick={() => fetchComments(id)}
-        >
+
+      <div className={classes.actions}>
+        <div className={classes.actionContainer}>
           <FontAwesomeIcon
-            className={classes.showCommentsIcon}
-            icon="ellipsis-v"
+            icon={commentsCount > 0 ? "comments" : ["far", "comments"]}
           />
-          {!loadingComments ? (
-            <Typography
-              className={classes.showCommentsText}
-              variant="subtitle1"
-            >
-              Show comments
-            </Typography>
-          ) : (
-            <CircularProgress
-              className={classes.commentsLoading}
-              color="secondary"
-              size="28px"
-            />
-          )}
-        </Container>
-      )}
-      <div className={classes.comments}>{comments}</div>
+          &nbsp;
+          <Typography variant="caption">
+            {commentsCount} {commentsCount !== 1 ? "Comments" : "Comment"}
+          </Typography>
+        </div>
+
+        <div className={classes.actionContainer}>
+          <FontAwesomeIcon icon={likesCount > 0 ? "heart" : ["far", "heart"]} />
+          &nbsp;
+          <Typography variant="caption">
+            {likesCount} {`${likesCount !== 1 ? "Likes" : "Like"}`}
+          </Typography>
+        </div>
+
+        <IconButton className={classes.actionIcon} aria-label="share">
+          <FontAwesomeIcon icon="share" />
+        </IconButton>
+      </div>
     </Container>
   );
 }
 
-export default Card;
+const mapActionsToProps = {
+  openModal,
+};
+
+export default connect(null, mapActionsToProps)(Card);

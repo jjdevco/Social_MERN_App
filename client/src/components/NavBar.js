@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { Link, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
@@ -14,6 +14,7 @@ import InputBase from "@material-ui/core/InputBase";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { initialize } from "../store/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   bar: {
@@ -119,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar({ authenticated, ...props }) {
+function NavBar({ authenticated, initialize, ...props }) {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -129,6 +130,10 @@ function NavBar({ authenticated, ...props }) {
   const small = useMediaQuery(theme.breakpoints.up("sm"));
 
   const [activeSearch, setActiveSearch] = useState(false);
+
+  useEffect(() => {
+    if (authenticated) initialize();
+  }, [authenticated, initialize]);
 
   return (
     <AppBar className={classes.bar}>
@@ -206,4 +211,8 @@ const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
 });
 
-export default connect(mapStateToProps)(NavBar);
+const mapActionsToProps = {
+  initialize,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(NavBar);
