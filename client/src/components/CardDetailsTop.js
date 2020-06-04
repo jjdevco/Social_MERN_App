@@ -1,6 +1,8 @@
 import React from "react";
+
+//Store
 import { connect } from "react-redux";
-import { clearModal } from "../store/actions/entriesActions";
+import { closeEntryDetails } from "../store/actions/entriesActions";
 
 // Date to Time util
 import formatDate from "../utils/timeago";
@@ -63,7 +65,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1, 2),
   },
 
-  entryMedia: { margin: theme.spacing(1, 0) },
+  entryMedia: {
+    margin: theme.spacing(1, 0),
+    border: `2px solid ${theme.palette.primary.main}`,
+    boxShadow: theme.shadows[5],
+    borderRadius: "6px",
+  },
 }));
 
 function CardDetailsTop({
@@ -72,7 +79,7 @@ function CardDetailsTop({
   body,
   media,
   createdAt,
-  clearModal,
+  closeEntryDetails,
   ...props
 }) {
   const classes = useStyles();
@@ -97,7 +104,7 @@ function CardDetailsTop({
           </Typography>
         </div>
         <FontAwesomeIcon
-          onClick={clearModal}
+          onClick={closeEntryDetails}
           className={classes.closeButton}
           icon={["far", "times-circle"]}
         />
@@ -106,7 +113,7 @@ function CardDetailsTop({
         <Typography variant="subtitle1">{body}</Typography>
         {media && (
           <div className={classes.entryMedia}>
-            <Media src={media} height={200} />
+            <Media src={media} height={250} />
           </div>
         )}
       </div>
@@ -115,11 +122,11 @@ function CardDetailsTop({
 }
 
 const mapStateToProps = (state) => ({
-  ...state.entry.data,
+  ...state.entries.entry,
 });
 
 const mapActionsToProps = {
-  clearModal,
+  closeEntryDetails,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(CardDetailsTop);

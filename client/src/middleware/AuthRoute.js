@@ -1,5 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+
+//Store
 import { connect } from "react-redux";
 
 function AuthRoute({ component: Component, authenticated, ...rest }) {

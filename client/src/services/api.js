@@ -35,6 +35,12 @@ export default {
   },
 
   entries: {
+    send: (data, options = {}) =>
+      axios.post(`${baseURL}/entry`, data, {
+        ...defaultOptions(),
+        ...options,
+      }),
+
     getAll: (options = {}) =>
       axios.get(`${baseURL}/entries`, {
         ...defaultOptions(),
@@ -43,6 +49,12 @@ export default {
 
     getComments: (id, options = {}) =>
       axios.get(`${baseURL}/entry/${id}/comments`, {
+        ...defaultOptions(),
+        ...options,
+      }),
+
+    delete: (id, options = {}) =>
+      axios.delete(`${baseURL}/entry/${id}`, {
         ...defaultOptions(),
         ...options,
       }),
@@ -61,10 +73,10 @@ export default {
   },
 
   comments: {
-    send: (id, body, options = {}) =>
+    send: (data, options = {}) =>
       axios.post(
-        `${baseURL}/entry/${id}/comment`,
-        { body },
+        `${baseURL}/entry/${data.id}/comment`,
+        { body: data.body },
         {
           ...defaultOptions(),
           ...options,

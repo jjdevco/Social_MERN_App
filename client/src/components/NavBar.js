@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from "react";
-import clsx from "clsx";
 import { Link, useLocation } from "react-router-dom";
+
+//Store
 import { connect } from "react-redux";
+import { initialize } from "../store/actions/userActions";
+import { openEntryNew } from "../store/actions/entriesActions";
 
 // MUI Components
-import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
+import clsx from "clsx";
+import {
+  fade,
+  makeStyles,
+  useTheme,
+  withStyles,
+} from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
+import Badge from "@material-ui/core/Badge";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 
+//APP Components
+import New from "./New";
+
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { initialize } from "../store/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   bar: {
@@ -45,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   iconButton: {
+    margin: theme.spacing(0, 1),
     height: "16px",
     width: "16px",
     "&:hover": {
@@ -62,11 +75,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
     backgroundColor: fade(theme.palette.background.dark, 0.6),
     padding: theme.spacing(0, 2),
-    margin: theme.spacing(0, 2),
     transition: theme.transitions.create(),
-    [theme.breakpoints.down("sm")]: {
-      marginLeft: theme.spacing(1),
-    },
     [theme.breakpoints.up("sm")]: {
       width: "auto",
     },
@@ -120,7 +129,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar({ authenticated, initialize, ...props }) {
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.light}`,
+    padding: "0 4px",
+    backgroundColor: theme.palette.background.dark,
+  },
+}))(Badge);
+
+function NavBar({
+  authenticated,
+  initialize,
+  openEntryNew,
+  notifications,
+  ...props
+}) {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -178,6 +203,29 @@ function NavBar({ authenticated, initialize, ...props }) {
             />
           </div>
         </div>
+        {authenticated && (
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <IconButton
+              className={classes.iconButton}
+              color="primary"
+              disableFocusRipple
+              onClick={() => openEntryNew()}
+            >
+              <FontAwesomeIcon icon="plus" />
+            </IconButton>
+            <IconButton
+              className={classes.iconButton}
+              color="primary"
+              disableFocusRipple
+            >
+              <StyledBadge badgeContent={notifications} color="secondary">
+                <FontAwesomeIcon
+                  icon={notifications > 0 ? "bell" : ["far", "bell"]}
+                />
+              </StyledBadge>
+            </IconButton>
+          </div>
+        )}
         {!authenticated && !authenticationRoute && small && (
           <div>
             <Button
@@ -185,7 +233,10 @@ function NavBar({ authenticated, initialize, ...props }) {
               color="primary"
               variant="outlined"
               component={Link}
-              to="/signin"
+              to={{
+                pathname: "/signin",
+                state: { redirect: path },
+              }}
             >
               Sign In
             </Button>
@@ -195,13 +246,17 @@ function NavBar({ authenticated, initialize, ...props }) {
               variant="contained"
               size="medium"
               component={Link}
-              to="/signup"
+              to={{
+                pathname: "/signup",
+                state: { redirect: path },
+              }}
               disableElevation
             >
               Sign Up
             </Button>
           </div>
         )}
+        {authenticated && <New />}
       </Toolbar>
     </AppBar>
   );
@@ -209,10 +264,12 @@ function NavBar({ authenticated, initialize, ...props }) {
 
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
+  notifications: state.user.notifications.length,
 });
 
 const mapActionsToProps = {
   initialize,
+  openEntryNew,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(NavBar);

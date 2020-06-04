@@ -11,6 +11,9 @@ import {
   faPlus,
   faMinus,
   faHeart as faHeartfull,
+  faTrashAlt,
+  faBell as faBellFull,
+  faPhotoVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faComments,
@@ -18,6 +21,7 @@ import {
   faEye,
   faEyeSlash,
   faTimesCircle,
+  faBell,
 } from "@fortawesome/free-regular-svg-icons";
 
 const icons = [
@@ -37,6 +41,10 @@ const icons = [
   faPlus,
   faMinus,
   faHeartfull,
+  faTrashAlt,
+  faBellFull,
+  faBell,
+  faPhotoVideo,
 ];
 
 export default icons;

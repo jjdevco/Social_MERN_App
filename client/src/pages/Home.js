@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
-import clsx from "clsx";
+
+//Store
 import { connect } from "react-redux";
 import { getEntries } from "../store/actions/entriesActions";
 
 //MUI Components
+import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -11,6 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 // APP Components
 import Card from "../components/Card";
 import CardDetails from "../components/CardDetails";
+import ConfirmDelete from "../components/ConfirmDelete";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     flexGrow: 1,
-    padding: theme.spacing(0, 1),
+    padding: theme.spacing(1),
   },
 
   bottomBar: {
@@ -52,17 +55,17 @@ function Home({ authenticated, getEntries, entries, entry, ...props }) {
       component="div"
       disableGutters
     >
-      <h1>Home</h1>
       {recentEntries}
       <CardDetails />
+      <ConfirmDelete />
     </Container>
   );
 }
 
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
-  entries: state.entry.entries,
-  entry: state.entry.data,
+  entries: state.entries.entries,
+  entry: state.entries.entry,
 });
 
 const mapActionsToProps = {

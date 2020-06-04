@@ -1,6 +1,11 @@
 import React from "react";
+
+//Store
 import { connect } from "react-redux";
-import { openModal } from "../store/actions/entriesActions";
+import {
+  openEntryDetails,
+  openEntryRemove,
+} from "../store/actions/entriesActions";
 
 // Date to Time util
 import formatDate from "../utils/timeago";
@@ -49,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: "50px",
     height: "50px",
-    margin: theme.spacing(2, 2, 1, 2),
+    margin: theme.spacing(1.5, 2),
     border: `2px solid ${theme.palette.primary.light}`,
     color: theme.palette.primary.contrastText,
   },
@@ -63,12 +68,30 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
 
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
   username: {
     marginTop: theme.spacing(1),
     fontWeight: "bold",
     color: theme.palette.primary.main,
     "&:hover": {
       textDecoration: "underline",
+    },
+  },
+
+  deleteButton: {
+    margin: theme.spacing(1, 2),
+    fontSize: "16px",
+    color: theme.palette.error.main,
+    cursor: "pointer",
+    zIndex: 200,
+    "&:hover": {
+      color: theme.palette.error.dark,
     },
   },
 
@@ -97,7 +120,11 @@ const useStyles = makeStyles((theme) => ({
 
   media: {
     minWidth: "160px",
+    maxWidth: "160px",
     margin: theme.spacing(1.5),
+    border: `2px solid ${theme.palette.primary.main}`,
+    boxShadow: theme.shadows[5],
+    borderRadius: "6px",
     [theme.breakpoints.only("xs")]: {
       display: "none",
     },
@@ -133,9 +160,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Card({ openModal, ...props }) {
+function Card({
+  openEntryDetails,
+  openEntryRemove,
+  userAuthenticated,
+  ...props
+}) {
   const classes = useStyles();
   const {
+    id,
     username,
     userAvatar,
     body,
@@ -145,13 +178,18 @@ function Card({ openModal, ...props }) {
     createdAt,
   } = props.data;
 
+  const open = (e) => {
+    if (e.target.tagName !== "svg" && e.target.tagName !== "path")
+      openEntryDetails({ ...props.data });
+  };
+
   return (
     <Container className={classes.root} component="div" disableGutters>
       <Container
         className={classes.card}
         component="div"
         disableGutters
-        onClick={() => openModal({ ...props.data })}
+        onClick={open}
       >
         <div className={classes.avatarContainer}>
           <Avatar
@@ -172,9 +210,19 @@ function Card({ openModal, ...props }) {
         <div className={classes.content}>
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div style={{ flexGrow: 1 }}>
-              <Typography className={classes.username} variant="h6">
-                @{username}
-              </Typography>
+              <div className={classes.header}>
+                <Typography className={classes.username} variant="h6">
+                  @{username}
+                </Typography>
+                {userAuthenticated === username && (
+                  <FontAwesomeIcon
+                    id={`${id}`}
+                    className={classes.deleteButton}
+                    icon="trash-alt"
+                    onClick={() => openEntryRemove(id)}
+                  />
+                )}
+              </div>
               <Typography className={classes.date} variant="body2">
                 {formatDate(createdAt)}
               </Typography>
@@ -220,8 +268,13 @@ function Card({ openModal, ...props }) {
   );
 }
 
+const mapStateToProps = (state) => ({
+  userAuthenticated: state.user.credentials.username,
+});
+
 const mapActionsToProps = {
-  openModal,
+  openEntryDetails,
+  openEntryRemove,
 };
 
-export default connect(null, mapActionsToProps)(Card);
+export default connect(mapStateToProps, mapActionsToProps)(Card);

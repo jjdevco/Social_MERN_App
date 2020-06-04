@@ -7,7 +7,9 @@ import CardMedia from "@material-ui/core/CardMedia";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    border: `2px solid ${theme.palette.primary.light}`,
+    width: "100%",
+    boxShadow: theme.shadows[0],
+    borderRadius: 0,
     backgroundColor: theme.palette.background.main,
   },
   media: {
@@ -15,22 +17,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Media({ height = 250, ...props }) {
+function Media({ height = 100, blob = false, name, src, ...props }) {
   const classes = useStyles();
 
   const isImage = /(?:([^:/?#]+):)?(?:([^/?#]*))?([^?#]*\.(?:jpe?g|gif|png))(?:\?([^#]*))?(?:#(.*))?/.test(
-    props.src
+    blob ? name : src
   );
+
+  const controls = blob ? false : isImage ? false : true;
 
   return (
     <Card className={classes.root}>
       <CardMedia
         className={classes.media}
-        style={{}}
-        src={props.src}
+        src={src}
         height={height}
         component={isImage ? "img" : "video"}
-        controls={isImage ? false : true}
+        controls={controls}
       />
     </Card>
   );

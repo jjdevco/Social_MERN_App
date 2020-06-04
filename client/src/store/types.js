@@ -3,10 +3,16 @@ export const SET_AUTHENTICATED = "SET_AUTHENTICATED";
 export const SET_USER = "SET_USER";
 
 //Entry Types
+export const ADD_ENTRY = "ADD_ENTRY";
+export const ADD_COMMENT = "ADD_COMMENT";
 export const SET_ENTRIES = "SET_ENTRIES";
 export const SET_COMMENTS = "SET_COMMENTS";
-export const ADD_COMMENT = "ADD_COMMENT";
-export const OPEN_MODAL = "OPEN_MODAL";
-export const CLOSE_MODAL = "CLOSE_MODAL";
-export const CLEAR_MODAL = "CLEAR_MODAL";
+export const REMOVE_ENTRY = "REMOVE_ENTRY";
+export const OPEN_ENTRY_NEW = "OPEN_ENTRY_NEW";
+export const CLOSE_ENTRY_NEW = "CLOSE_ENTRY_NEW";
+export const OPEN_ENTRY_REMOVE = "OPEN_ENTRY_REMOVE";
+export const CLOSE_ENTRY_REMOVE = "CLOSE_ENTRY_REMOVE";
+export const OPEN_ENTRY_DETAILS = "OPEN_ENTRY_DETAILS";
+export const CLOSE_ENTRY_DETAILS = "CLOSE_ENTRY_DETAILS";
+export const CLEAR_ENTRY_DETAILS = "CLEAR_ENTRY_DETAILS";
 export const UPDATE_LIKES_COUNT = "UPDATE_LIKES_COUNT";

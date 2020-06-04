@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+
+//Store
 import { connect } from "react-redux";
 import { getComments } from "../store/actions/entriesActions";
 
@@ -76,9 +78,9 @@ function CardDetailsComments({
 }
 
 const mapStateToProps = (state) => ({
-  open: state.entry.modal,
-  comments: state.entry.comments,
-  ...state.entry.data,
+  open: state.entries.entryDetails,
+  comments: state.entries.comments,
+  ...state.entries.entry,
 });
 
 const mapActionsToProps = {

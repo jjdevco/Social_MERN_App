@@ -1,18 +1,35 @@
 import api from "../../services/api";
 import {
-  OPEN_MODAL,
+  ADD_ENTRY,
+  ADD_COMMENT,
   SET_ENTRIES,
   SET_COMMENTS,
-  ADD_COMMENT,
-  CLOSE_MODAL,
-  CLEAR_MODAL,
+  REMOVE_ENTRY,
+  OPEN_ENTRY_NEW,
+  CLOSE_ENTRY_NEW,
+  OPEN_ENTRY_REMOVE,
+  CLOSE_ENTRY_REMOVE,
+  OPEN_ENTRY_DETAILS,
+  CLOSE_ENTRY_DETAILS,
+  CLEAR_ENTRY_DETAILS,
   UPDATE_LIKES_COUNT,
 } from "../types";
 
-export const openModal = (entry) => (dispatch) =>
-  dispatch({
-    type: OPEN_MODAL,
+export const addEntry = (entry) => async (dispatch) => {
+  await dispatch({
+    type: ADD_ENTRY,
     payload: entry,
+  });
+
+  return dispatch({
+    type: CLOSE_ENTRY_NEW,
+  });
+};
+
+export const addComment = (comment) => (dispatch) =>
+  dispatch({
+    type: ADD_COMMENT,
+    payload: comment,
   });
 
 export const getEntries = () => async (dispatch) =>
@@ -27,10 +44,10 @@ export const getComments = (id) => async (dispatch) =>
     .then(({ data }) => dispatch({ type: SET_COMMENTS, payload: data }))
     .catch((err) => console.log(err));
 
-export const addComment = (comment) => (dispatch) =>
+export const removeEntry = (entry) => (dispatch) =>
   dispatch({
-    type: ADD_COMMENT,
-    payload: comment,
+    type: REMOVE_ENTRY,
+    payload: entry,
   });
 
 export const updateLikesCount = (count) => (dispatch) =>
@@ -39,15 +56,42 @@ export const updateLikesCount = (count) => (dispatch) =>
     payload: count,
   });
 
-export const clearModal = () => async (dispatch) => {
+export const openEntryNew = () => (dispatch) =>
+  dispatch({
+    type: OPEN_ENTRY_NEW,
+  });
+
+export const closeEntryNew = () => (dispatch) =>
+  dispatch({
+    type: CLOSE_ENTRY_NEW,
+  });
+
+export const openEntryRemove = (id) => (dispatch) =>
+  dispatch({
+    type: OPEN_ENTRY_REMOVE,
+    payload: id,
+  });
+
+export const closeEntryRemove = () => (dispatch) =>
+  dispatch({
+    type: CLOSE_ENTRY_REMOVE,
+  });
+
+export const openEntryDetails = (entry) => (dispatch) =>
+  dispatch({
+    type: OPEN_ENTRY_DETAILS,
+    payload: entry,
+  });
+
+export const closeEntryDetails = () => async (dispatch) => {
   await dispatch({
-    type: CLOSE_MODAL,
+    type: CLOSE_ENTRY_DETAILS,
   });
 
   return setTimeout(
     () =>
       dispatch({
-        type: CLEAR_MODAL,
+        type: CLEAR_ENTRY_DETAILS,
       }),
     100
   );

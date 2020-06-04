@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
+
+//Store
 import { connect } from "react-redux";
 import { authenticate } from "../store/actions/userActions";
 

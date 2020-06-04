@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useHistory } from "react-router-dom";
-import clsx from "clsx";
+import React, { useState, useEffect } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+
+//Store
 import { connect } from "react-redux";
-import { addComment } from "../store/actions/entriesActions";
+import { addEntry, addComment } from "../store/actions/entriesActions";
 
 // Api Services
 import api from "../services/api";
 
 //MUI Components
+import clsx from "clsx";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
@@ -94,53 +96,80 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CardDetailsInput({ open, authenticated, id, addComment, ...props }) {
+function Input({
+  type,
+  entryDetails,
+  authenticated,
+  entryId,
+  media,
+  addEntry,
+  addComment,
+  ...props
+}) {
   const history = useHistory();
+  const location = useLocation();
   const classes = useStyles();
 
   const [activeInput, setActiveInput] = useState(false);
-  const [comment, setComment] = useState("");
+  const [input, setInput] = useState("");
   const [maxChars, setMaxChars] = useState(0);
-  const [sendingComment, setSendingComment] = useState(false);
-
-  const input = useRef();
+  const [sending, setSending] = useState(false);
 
   const handleInput = (e) => {
     setMaxChars(e.target.value.length);
-    setComment(e.target.value);
+    setInput(e.target.value);
     return;
   };
 
-  const sendComment = () => {
-    if (!comment) return;
+  const send = () => {
+    let content = {};
 
-    setSendingComment(true);
+    if (!input) return;
+
+    if (type === "entries") {
+      content = new FormData();
+      content.append("body", input);
+      if (media.current.files[0])
+        content.append(
+          "media",
+          media.current.files[0],
+          media.current.files[0].name
+        );
+    } else {
+      content.id = entryId;
+      content.body = input;
+    }
+
+    setSending(true);
+
+    const add = (data) =>
+      type === "entries" ? addEntry(data) : addComment(data);
 
     if (authenticated)
-      return api.comments
-        .send(id, comment)
+      return api[type]
+        .send(content)
         .then(({ data }) => {
-          addComment(data);
+          add(data);
           setMaxChars(0);
-          setComment("");
-          setSendingComment(false);
+          setInput("");
+          setSending(false);
         })
         .catch((err) => {
-          setSendingComment(false);
+          setSending(false);
           console.log(err);
         });
     else {
-      setSendingComment(false);
-      return history.push("/signin", { redirect: "/" });
+      setSending(false);
+      return history.push("/signin", { redirect: location.pathname });
     }
   };
 
   useEffect(() => {
     setActiveInput(false);
-    setComment("");
+    setInput("");
     setMaxChars(0);
-    setSendingComment(false);
-  }, [open]);
+    setSending(false);
+  }, [entryDetails]);
 
   return (
     <div className={classes.input}>
@@ -163,13 +192,12 @@ function CardDetailsInput({ open, authenticated, id, addComment, ...props }) {
           ])}
         >
           <InputBase
-            ref={input}
             placeholder="Share your thoughts..."
             classes={{
               root: classes.inputRoot,
             }}
-            value={comment}
-            inputProps={{ "aria-label": "comment" }}
+            value={input}
+            inputProps={{ "aria-label": "input" }}
             onFocus={() => setActiveInput(true)}
             onBlur={() => setActiveInput(false)}
             onChange={handleInput}
@@ -189,11 +217,11 @@ function CardDetailsInput({ open, authenticated, id, addComment, ...props }) {
       </div>
       <IconButton
         className={classes.inputButton}
-        disabled={!comment || maxChars > 250 || sendingComment}
+        disabled={!input || maxChars > 250 || sending}
         disableFocusRipple={true}
-        onClick={() => sendComment()}
+        onClick={() => send()}
       >
-        {sendingComment ? (
+        {sending ? (
           <CircularProgress size="28px" color="secondary" />
         ) : (
           <FontAwesomeIcon icon="comment-dots" />
@@ -206,12 +234,13 @@ function CardDetailsInput({ open, authenticated, id, addComment, ...props }) {
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
   credentials: state.user.credentials,
-  open: state.entry.modal,
-  ...state.entry.data,
+  entryDetails: state.entries.entryDetails,
+  entryId: state.entries.entry.id,
 });
 
 const mapActionsToProps = {
+  addEntry,
   addComment,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(CardDetailsInput);
+export default connect(mapStateToProps, mapActionsToProps)(Input);

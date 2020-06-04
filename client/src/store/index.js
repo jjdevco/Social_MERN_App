@@ -10,7 +10,7 @@ const initialState = {};
 
 const reducers = combineReducers({
   user: userReducer,
-  entry: entriesReducer,
+  entries: entriesReducer,
 });
 
 const store = createStore(

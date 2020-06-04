@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { updateLikesCount, clearModal } from "../store/actions/entriesActions";
+
+//Store
+import { connect } from "react-redux";
+import {
+  updateLikesCount,
+  closeEntryDetails,
+} from "../store/actions/entriesActions";
 
 // Api Services
 import api from "../services/api";
@@ -15,8 +20,8 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 
 //App Components
+import Input from "./Input";
 import CardDetailsTop from "./CardDetailsTop";
-import CardDetailsInput from "./CardDetailsInput";
 import CardDetailsComments from "./CardDetailsComments";
 
 // FontAwesome Icons
@@ -37,9 +42,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     margin: theme.spacing(5),
-    border: `3px solid ${theme.palette.primary.dark}`,
+    border: `4px solid ${theme.palette.primary.main}`,
     boxShadow: theme.shadows[5],
-    borderRadius: "5px",
+    borderRadius: "10px",
     backgroundColor: theme.palette.background.main,
     [theme.breakpoints.down("sm")]: {
       width: "250px",
@@ -103,7 +108,7 @@ function CardDetails({
   commentsCount,
   likesCount,
   updateLikesCount,
-  clearModal,
+  closeEntryDetails,
   ...props
 }) {
   const history = useHistory();
@@ -133,19 +138,18 @@ function CardDetails({
       className={classes.modal}
       open={open}
       onRendered={() => setRendered(true)}
-      onClose={clearModal}
+      onClose={closeEntryDetails}
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 400,
       }}
-      disableBackdropClick
       closeAfterTransition
     >
       <Fade in={open}>
         <div className={classes.card}>
           <div>
             <CardDetailsTop />
-            <CardDetailsInput />
+            <Input type={"comments"} />
           </div>
 
           <div className={classes.entryDetails}>
@@ -193,13 +197,13 @@ function CardDetails({
 
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
-  open: state.entry.modal,
-  ...state.entry.data,
+  open: state.entries.entryDetails,
+  ...state.entries.entry,
 });
 
 const mapActionsToProps = {
   updateLikesCount,
-  clearModal,
+  closeEntryDetails,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(CardDetails);
