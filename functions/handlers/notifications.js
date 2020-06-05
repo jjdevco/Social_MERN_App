@@ -1,23 +1,6 @@
 const functions = require("firebase-functions");
 const { db } = require("../utils/admin");
 
-exports.markNotificationsRead = function (req, res) {
-  let batch = db.batch();
-
-  req.body.forEach((notificationId) => {
-    const notification = db.doc(`/notifications/${notificationId}`);
-    batch.update(notification, { read: true });
-  });
-
-  return batch
-    .commit()
-    .then(() => res.json({ message: "Notifications marked read." }))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: err.code });
-    });
-};
-
 exports.createNotificationOnLike = functions.firestore
   .document("likes/{id}")
   .onCreate((like) => {
@@ -87,3 +70,37 @@ exports.createNotificationOnComment = functions.firestore
         return;
       });
   });
+
+exports.markNotificationsRead = function (req, res) {
+  let batch = db.batch();
+
+  req.body.forEach((notificationId) => {
+    const notification = db.doc(`/notifications/${notificationId}`);
+    batch.update(notification, { read: true });
+  });
+
+  return batch
+    .commit()
+    .then(() => res.json({ message: "Notifications marked read." }))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: err.code });
+    });
+};
+
+exports.deleteNotifications = function (req, res) {
+  let batch = db.batch();
+
+  req.body.forEach((notificationId) => {
+    const notification = db.doc(`/notifications/${notificationId}`);
+    batch.delete(notification);
+  });
+
+  return batch
+    .commit()
+    .then(() => res.json({ message: "Notifications deleted." }))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: err.code });
+    });
+};

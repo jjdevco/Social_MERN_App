@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 //Store
@@ -8,22 +8,17 @@ import { openEntryNew } from "../store/actions/entriesActions";
 
 // MUI Components
 import clsx from "clsx";
-import {
-  fade,
-  makeStyles,
-  useTheme,
-  withStyles,
-} from "@material-ui/core/styles";
+import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
-import Badge from "@material-ui/core/Badge";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 
 //APP Components
 import New from "./New";
+import Notifications from "./Notifications";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -74,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
     borderColor: "transparent",
     borderRadius: "10px",
     backgroundColor: fade(theme.palette.background.dark, 0.6),
+    marginRight: theme.spacing(1),
     padding: theme.spacing(0, 2),
     transition: theme.transitions.create(),
     [theme.breakpoints.up("sm")]: {
@@ -129,25 +125,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StyledBadge = withStyles((theme) => ({
-  badge: {
-    right: -3,
-    top: 13,
-    border: `2px solid ${theme.palette.background.light}`,
-    padding: "0 4px",
-    backgroundColor: theme.palette.background.dark,
-  },
-}))(Badge);
-
-function NavBar({
-  authenticated,
-  initialize,
-  openEntryNew,
-  notifications,
-  ...props
-}) {
+function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
   const theme = useTheme();
   const classes = useStyles();
+  const anchor = createRef();
 
   const path = useLocation().pathname;
   const authenticationRoute =
@@ -168,6 +149,7 @@ function NavBar({
           root: classes.toolbar,
         }}
         disableGutters
+        ref={anchor}
       >
         <div className={classes.leftMenu}>
           <IconButton
@@ -213,17 +195,7 @@ function NavBar({
             >
               <FontAwesomeIcon icon="plus" />
             </IconButton>
-            <IconButton
-              className={classes.iconButton}
-              color="primary"
-              disableFocusRipple
-            >
-              <StyledBadge badgeContent={notifications} color="secondary">
-                <FontAwesomeIcon
-                  icon={notifications > 0 ? "bell" : ["far", "bell"]}
-                />
-              </StyledBadge>
-            </IconButton>
+            <Notifications anchor={anchor} />
           </div>
         )}
         {!authenticated && !authenticationRoute && small && (
@@ -264,7 +236,6 @@ function NavBar({
 
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
-  notifications: state.user.notifications.length,
 });
 
 const mapActionsToProps = {

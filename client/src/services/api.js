@@ -74,13 +74,23 @@ export default {
 
   comments: {
     send: (data, options = {}) =>
-      axios.post(
-        `${baseURL}/entry/${data.id}/comment`,
-        { body: data.body },
-        {
-          ...defaultOptions(),
-          ...options,
-        }
-      ),
+      axios.post(`${baseURL}/entry/${data.id}/comment`, data, {
+        ...defaultOptions(),
+        ...options,
+      }),
+  },
+
+  notifications: {
+    read: (data, options = {}) =>
+      axios.post(`${baseURL}/notifications/read`, data, {
+        ...defaultOptions(),
+        ...options,
+      }),
+
+    delete: (data, options = {}) =>
+      axios.post(`${baseURL}/notifications/delete`, data, {
+        ...defaultOptions(),
+        ...options,
+      }),
   },
 };

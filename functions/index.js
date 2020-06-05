@@ -31,6 +31,7 @@ const {
   createNotificationOnComment,
   deleteNotificationOnUnlike,
   markNotificationsRead,
+  deleteNotifications,
 } = require("./handlers/notifications");
 
 // CORS
@@ -65,7 +66,8 @@ app.post("/user/details", verifyAuth, updateUserDetails);
 app.post("/user/avatar", verifyAuth, uploadAvatar);
 
 // Notifications routes
-app.post("/notifications", verifyAuth, markNotificationsRead);
+app.post("/notifications/read", verifyAuth, markNotificationsRead);
+app.post("/notifications/delete", verifyAuth, deleteNotifications);
 
 // Server functions
 exports.onEntryDeleted = onEntryDeleted;

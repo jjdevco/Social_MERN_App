@@ -178,9 +178,20 @@ function Card({
     createdAt,
   } = props.data;
 
-  const open = (e) => {
-    if (e.target.tagName !== "svg" && e.target.tagName !== "path")
+  const open = (e, opening) => {
+    if (opening) {
+      e.stopPropagation();
       openEntryDetails({ ...props.data });
+      return;
+    }
+  };
+
+  const remove = (e, removing, id) => {
+    if (removing) {
+      e.stopPropagation();
+      openEntryRemove(id);
+      return;
+    }
   };
 
   return (
@@ -189,7 +200,7 @@ function Card({
         className={classes.card}
         component="div"
         disableGutters
-        onClick={open}
+        onClick={(e) => open(e, true)}
       >
         <div className={classes.avatarContainer}>
           <Avatar
@@ -219,7 +230,7 @@ function Card({
                     id={`${id}`}
                     className={classes.deleteButton}
                     icon="trash-alt"
-                    onClick={() => openEntryRemove(id)}
+                    onClick={(e) => remove(e, true, id)}
                   />
                 )}
               </div>

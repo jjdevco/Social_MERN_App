@@ -14,6 +14,7 @@ import {
   faTrashAlt,
   faBell as faBellFull,
   faPhotoVideo,
+  faComment,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faComments,
@@ -29,6 +30,7 @@ const icons = [
   faSearch,
   faAddressCard,
   faUserCircle,
+  faComment,
   faComments,
   faCommentsFull,
   faHeart,
