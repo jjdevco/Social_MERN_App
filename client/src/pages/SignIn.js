@@ -112,23 +112,44 @@ function SignIn({ authenticate, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const validateEmail = () => {
-    const { valid, error } = inputValidator(email, ["required", "email"]);
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+
+    const { valid, error } = inputValidator(e.target.value, [
+      "required",
+      "email",
+    ]);
+
     return !valid
       ? setFormErrors({ ...formErrors, email: error })
       : setFormErrors({ ...formErrors, email: false });
   };
 
-  const validatePassword = () => {
-    const { valid, error } = inputValidator(password, [
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+
+    const { valid, error } = inputValidator(e.target.value, [
       "required",
       "password",
       "minPassword",
       "maxPassword",
     ]);
+
     return !valid
       ? setFormErrors({ ...formErrors, password: error })
       : setFormErrors({ ...formErrors, password: false });
+  };
+
+  const enter = (e) => {
+    if (
+      e.keyCode === 13 ||
+      (e.key.toLowerCase() === "enter" &&
+        Object.values(formErrors).every((el) => el === false))
+    ) {
+      e.preventDefault();
+      return submit();
+    }
+    return;
   };
 
   const submit = () => {
@@ -138,8 +159,8 @@ function SignIn({ authenticate, ...props }) {
         .signIn({ email, password })
         .then(({ data }) => {
           authenticate(data.token);
-          return location.state.redirect
-            ? history.push(location.state.redirect)
+          return history.action !== "POP"
+            ? history.goBack()
             : history.push("/");
         })
         .catch((error) => {
@@ -168,8 +189,7 @@ function SignIn({ authenticate, ...props }) {
             label="Email"
             error={!!formErrors.email}
             helperText={formErrors.email || "Your email address"}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={validateEmail}
+            onChange={handleEmail}
           />
           <TextField
             className={classes.input}
@@ -196,8 +216,8 @@ function SignIn({ authenticate, ...props }) {
                 </InputAdornment>
               ),
             }}
-            onChange={(e) => setPassword(e.target.value)}
-            onBlur={validatePassword}
+            onChange={handlePassword}
+            onKeyPress={enter}
           />
         </form>
         <div className={classes.linkContainer}>

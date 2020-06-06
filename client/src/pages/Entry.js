@@ -116,6 +116,7 @@ function Entry({
   username,
   id,
   commentsCount,
+  likes,
   likesCount,
   updateLikesCount,
   setEntryDetails,
@@ -128,21 +129,23 @@ function Entry({
   const [loading, setLoading] = useState(true);
   const [toDelete, setToDelete] = useState(null);
 
-  const likeEntry = () =>
-    authenticated
-      ? api.entries
-          .like(id)
-          .then(({ data }) => updateLikesCount(data.likesCount))
-          .catch((err) => console.log(err))
-      : history.push("/signin", { redirect: "/" });
+  const [liked, setLiked] = useState(likes.some((el) => el.entryId === id));
 
-  const unlikeEntry = () =>
-    authenticated
-      ? api.entries
-          .unlike(id)
-          .then(({ data }) => updateLikesCount(data.likesCount))
-          .catch((err) => console.log(err))
-      : history.push("/signin", { redirect: "/" });
+  const likeEntry = () => {
+    setLiked(true);
+    updateLikesCount(likesCount + 1);
+    return authenticated
+      ? api.entries.like(id).catch((err) => console.log(err))
+      : history.push("/signin");
+  };
+
+  const unlikeEntry = () => {
+    setLiked(false);
+    updateLikesCount(likesCount - 1);
+    return authenticated
+      ? api.entries.unlike(id).catch((err) => console.log(err))
+      : history.push("/signin");
+  };
 
   useEffect(() => {
     api.entries
@@ -178,13 +181,16 @@ function Entry({
             </span>
           </Typography>
           <Typography className={classes.entryDetailsBox}>
-            <IconButton
-              className={classes.btnMinus}
-              size="small"
-              onClick={() => unlikeEntry()}
-            >
-              <FontAwesomeIcon icon="minus" />
-            </IconButton>
+            {authenticated && (
+              <IconButton
+                className={classes.btnMinus}
+                size="small"
+                onClick={() => unlikeEntry()}
+                disabled={!liked}
+              >
+                <FontAwesomeIcon icon="minus" />
+              </IconButton>
+            )}
             <FontAwesomeIcon
               className={classes.entryDetailsIcon}
               icon={commentsCount > 0 ? "heart" : ["far", "heart"]}
@@ -193,13 +199,16 @@ function Entry({
             <span className={classes.text}>
               {likesCount !== 1 ? "Likes" : "Like"}
             </span>
-            <IconButton
-              className={classes.btnPlus}
-              size="small"
-              onClick={() => likeEntry()}
-            >
-              <FontAwesomeIcon icon="plus" />
-            </IconButton>
+            {authenticated && (
+              <IconButton
+                className={classes.btnPlus}
+                size="small"
+                onClick={() => likeEntry()}
+                disabled={liked}
+              >
+                <FontAwesomeIcon icon="plus" />
+              </IconButton>
+            )}
           </Typography>
           {userAuthenticated === username && (
             <Typography className={classes.entryDetailsBox}>
@@ -227,6 +236,7 @@ function Entry({
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
   userAuthenticated: state.user.credentials.username,
+  likes: state.user.likes,
   ...state.entries.entry,
 });
 

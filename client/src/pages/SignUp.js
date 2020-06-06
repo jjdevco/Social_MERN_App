@@ -117,37 +117,49 @@ function SignUp({ authenticate, ...props }) {
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const validateUsername = () => {
-    const { valid, error } = inputValidator(username, ["required"]);
+  const handleUsername = (e) => {
+    setUsername(e.target.value);
+
+    const { valid, error } = inputValidator(e.target.value, ["required"]);
 
     return !valid
       ? setFormErrors({ ...formErrors, username: error })
       : setFormErrors({ ...formErrors, username: false });
   };
 
-  const validateEmail = () => {
-    const { valid, error } = inputValidator(email, ["required", "email"]);
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+
+    const { valid, error } = inputValidator(e.target.value, [
+      "required",
+      "email",
+    ]);
+
     return !valid
       ? setFormErrors({ ...formErrors, email: error })
       : setFormErrors({ ...formErrors, email: false });
   };
 
-  const validatePassword = () => {
-    const { valid, error } = inputValidator(password, [
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+
+    const { valid, error } = inputValidator(e.target.value, [
       "required",
       "password",
       "minPassword",
       "maxPassword",
     ]);
-    if (repeatPassword !== "") validateRepeatPassword();
+
     return !valid
       ? setFormErrors({ ...formErrors, password: error })
       : setFormErrors({ ...formErrors, password: false });
   };
 
-  const validateRepeatPassword = () => {
+  const handleRepeatPassword = (e) => {
+    setRepeatPassword(e.target.value);
+
     const { valid, error } = inputValidator(
-      repeatPassword,
+      e.target.value,
       ["required", "password", "minPassword", "maxPassword", "RepeatPassword"],
       password
     );
@@ -155,6 +167,18 @@ function SignUp({ authenticate, ...props }) {
     return !valid
       ? setFormErrors({ ...formErrors, repeatPassword: error })
       : setFormErrors({ ...formErrors, repeatPassword: false });
+  };
+
+  const enter = (e) => {
+    if (
+      e.keyCode === 13 ||
+      (e.key.toLowerCase() === "enter" &&
+        Object.values(formErrors).every((el) => el === false))
+    ) {
+      e.preventDefault();
+      return submit();
+    }
+    return;
   };
 
   const submit = () => {
@@ -169,8 +193,8 @@ function SignUp({ authenticate, ...props }) {
         .signUp({ username, email, password, repeatPassword })
         .then(({ data }) => {
           authenticate(data.token);
-          return location.state.redirect
-            ? history.push(location.state.redirect)
+          return history.action !== "POP"
+            ? history.goBack()
             : history.push("/");
         })
         .catch((error) => {
@@ -199,8 +223,7 @@ function SignUp({ authenticate, ...props }) {
             label="Username"
             error={!!formErrors.username}
             helperText={formErrors.username || "Your username"}
-            onChange={(e) => setUsername(e.target.value)}
-            onBlur={validateUsername}
+            onChange={handleUsername}
           />
           <TextField
             className={classes.input}
@@ -210,8 +233,7 @@ function SignUp({ authenticate, ...props }) {
             label="Email"
             error={!!formErrors.email}
             helperText={formErrors.email || "Your email address"}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={validateEmail}
+            onChange={handleEmail}
           />
           <TextField
             className={classes.input}
@@ -238,8 +260,7 @@ function SignUp({ authenticate, ...props }) {
                 </InputAdornment>
               ),
             }}
-            onChange={(e) => setPassword(e.target.value)}
-            onBlur={validatePassword}
+            onChange={handlePassword}
           />
           <TextField
             className={classes.input}
@@ -268,8 +289,8 @@ function SignUp({ authenticate, ...props }) {
                 </InputAdornment>
               ),
             }}
-            onChange={(e) => setRepeatPassword(e.target.value)}
-            onBlur={validateRepeatPassword}
+            onChange={handleRepeatPassword}
+            onKeyPress={enter}
           />
         </form>
         <div className={classes.linkContainer}>

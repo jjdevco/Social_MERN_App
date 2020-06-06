@@ -129,8 +129,8 @@ function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
   const theme = useTheme();
   const classes = useStyles();
   const anchor = createRef();
-
   const path = useLocation().pathname;
+
   const authenticationRoute =
     path === "/signin" || path === "/signup" ? true : false;
   const small = useMediaQuery(theme.breakpoints.up("sm"));
@@ -205,10 +205,7 @@ function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
               color="primary"
               variant="outlined"
               component={Link}
-              to={{
-                pathname: "/signin",
-                state: { redirect: path },
-              }}
+              to="/signin"
             >
               Sign In
             </Button>
@@ -218,10 +215,7 @@ function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
               variant="contained"
               size="medium"
               component={Link}
-              to={{
-                pathname: "/signup",
-                state: { redirect: path },
-              }}
+              to="/signup"
               disableElevation
             >
               Sign Up

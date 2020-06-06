@@ -5,6 +5,12 @@ import thunk from "redux-thunk";
 import userReducer from "./reducers/userReducer";
 import entriesReducer from "./reducers/entriesReducer";
 
+const devTools =
+  process.env.NODE_ENV === "development"
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
+    : null;
+
 const middleware = [thunk];
 const initialState = {};
 
@@ -16,10 +22,7 @@ const reducers = combineReducers({
 const store = createStore(
   reducers,
   initialState,
-  compose(
-    applyMiddleware(...middleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  )
+  compose(applyMiddleware(...middleware), devTools)
 );
 
 export default store;
