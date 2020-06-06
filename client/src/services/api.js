@@ -41,6 +41,12 @@ export default {
         ...options,
       }),
 
+    getOne: (id, options = {}) =>
+      axios.get(`${baseURL}/entry/${id}`, {
+        ...defaultOptions(),
+        ...options,
+      }),
+
     getAll: (options = {}) =>
       axios.get(`${baseURL}/entries`, {
         ...defaultOptions(),

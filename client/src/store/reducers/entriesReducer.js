@@ -2,15 +2,10 @@ import {
   ADD_ENTRY,
   ADD_COMMENT,
   SET_ENTRIES,
-  SET_COMMENTS,
   REMOVE_ENTRY,
   OPEN_ENTRY_NEW,
   CLOSE_ENTRY_NEW,
-  OPEN_ENTRY_REMOVE,
-  CLOSE_ENTRY_REMOVE,
-  OPEN_ENTRY_DETAILS,
-  CLOSE_ENTRY_DETAILS,
-  CLEAR_ENTRY_DETAILS,
+  SET_ENTRY_DETAILS,
   UPDATE_LIKES_COUNT,
 } from "../types";
 
@@ -19,8 +14,6 @@ const initialState = {
   entryDetails: false,
   entries: [],
   entry: {},
-  toRemove: null,
-  comments: [],
 };
 
 export default function (state = initialState, { type, payload }) {
@@ -35,8 +28,11 @@ export default function (state = initialState, { type, payload }) {
     case ADD_COMMENT: {
       return {
         ...state,
-        entry: { ...state.entry, commentsCount: state.entry.commentsCount + 1 },
-        comments: [payload, ...state.comments],
+        entry: {
+          ...state.entry,
+          commentsCount: state.entry.commentsCount + 1,
+          comments: [payload, ...state.entry.comments],
+        },
       };
     }
 
@@ -47,12 +43,11 @@ export default function (state = initialState, { type, payload }) {
       };
     }
 
-    case SET_COMMENTS: {
+    case SET_ENTRY_DETAILS:
       return {
         ...state,
-        comments: payload,
+        entry: payload,
       };
-    }
 
     case REMOVE_ENTRY: {
       return {
@@ -76,40 +71,6 @@ export default function (state = initialState, { type, payload }) {
         ...state,
         entryNew: false,
       };
-
-    case OPEN_ENTRY_REMOVE:
-      return {
-        ...state,
-        toRemove: payload,
-      };
-
-    case CLOSE_ENTRY_REMOVE:
-      return {
-        ...state,
-        toRemove: null,
-      };
-
-    case OPEN_ENTRY_DETAILS:
-      return {
-        ...state,
-        entryDetails: true,
-        entry: payload,
-      };
-
-    case CLOSE_ENTRY_DETAILS: {
-      return {
-        ...state,
-        entryDetails: false,
-      };
-    }
-
-    case CLEAR_ENTRY_DETAILS: {
-      return {
-        ...state,
-        entry: {},
-        comments: [],
-      };
-    }
 
     case UPDATE_LIKES_COUNT: {
       return {

@@ -12,8 +12,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 // APP Components
 import Card from "../components/Card";
-import CardDetails from "../components/CardDetails";
-import ConfirmDelete from "../components/ConfirmDelete";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -56,8 +54,6 @@ function Home({ authenticated, getEntries, entries, entry, ...props }) {
       disableGutters
     >
       {recentEntries}
-      <CardDetails />
-      <ConfirmDelete />
     </Container>
   );
 }

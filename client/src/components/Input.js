@@ -153,6 +153,7 @@ function Input({
           setMaxChars(0);
           setInput("");
           setSending(false);
+          if (type === "entries") history.push(`/entry/${data.id}`);
         })
         .catch((err) => {
           setSending(false);

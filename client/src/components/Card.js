@@ -1,11 +1,5 @@
 import React from "react";
-
-//Store
-import { connect } from "react-redux";
-import {
-  openEntryDetails,
-  openEntryRemove,
-} from "../store/actions/entriesActions";
+import { useHistory } from "react-router-dom";
 
 // Date to Time util
 import formatDate from "../utils/timeago";
@@ -160,13 +154,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Card({
-  openEntryDetails,
-  openEntryRemove,
-  userAuthenticated,
-  ...props
-}) {
+function Card({ openEntryDetails, openEntryRemove, ...props }) {
   const classes = useStyles();
+  const history = useHistory();
   const {
     id,
     username,
@@ -177,30 +167,13 @@ function Card({
     media,
     createdAt,
   } = props.data;
-
-  const open = (e, opening) => {
-    if (opening) {
-      e.stopPropagation();
-      openEntryDetails({ ...props.data });
-      return;
-    }
-  };
-
-  const remove = (e, removing, id) => {
-    if (removing) {
-      e.stopPropagation();
-      openEntryRemove(id);
-      return;
-    }
-  };
-
   return (
     <Container className={classes.root} component="div" disableGutters>
       <Container
         className={classes.card}
         component="div"
         disableGutters
-        onClick={(e) => open(e, true)}
+        onClick={() => history.push(`/entry/${id}`)}
       >
         <div className={classes.avatarContainer}>
           <Avatar
@@ -225,14 +198,6 @@ function Card({
                 <Typography className={classes.username} variant="h6">
                   @{username}
                 </Typography>
-                {userAuthenticated === username && (
-                  <FontAwesomeIcon
-                    id={`${id}`}
-                    className={classes.deleteButton}
-                    icon="trash-alt"
-                    onClick={(e) => remove(e, true, id)}
-                  />
-                )}
               </div>
               <Typography className={classes.date} variant="body2">
                 {formatDate(createdAt)}
@@ -279,13 +244,4 @@ function Card({
   );
 }
 
-const mapStateToProps = (state) => ({
-  userAuthenticated: state.user.credentials.username,
-});
-
-const mapActionsToProps = {
-  openEntryDetails,
-  openEntryRemove,
-};
-
-export default connect(mapStateToProps, mapActionsToProps)(Card);
+export default Card;

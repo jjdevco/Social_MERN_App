@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 //Store
 import { connect } from "react-redux";
@@ -123,12 +124,16 @@ const Notifications = ({
   deleteNotifications,
 }) => {
   const classes = useStyles();
+  const history = useHistory();
   const [open, setOpen] = useState(false);
 
   const handleClick = (e, id, remove) => {
     if ((id, remove)) {
       e.stopPropagation();
       deleteNotifications([id]);
+    } else {
+      setOpen(false);
+      return history.push(`/entry/${id}`);
     }
   };
 
@@ -195,7 +200,7 @@ const Notifications = ({
               <MenuItem
                 className={classes.item}
                 key={el.id}
-                onClick={handleClick}
+                onClick={(e) => handleClick(e, el.entryId, false)}
               >
                 <FontAwesomeIcon
                   className={clsx([classes.icon, el.read && classes.read])}

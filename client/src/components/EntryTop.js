@@ -2,7 +2,6 @@ import React from "react";
 
 //Store
 import { connect } from "react-redux";
-import { closeEntryDetails } from "../store/actions/entriesActions";
 
 // Date to Time util
 import formatDate from "../utils/timeago";
@@ -15,16 +14,7 @@ import Avatar from "@material-ui/core/Avatar";
 //App Components
 import Media from "./Media";
 
-// FontAwesome Icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 const useStyles = makeStyles((theme) => ({
-  closeButton: {
-    fontSize: "26px",
-    color: theme.palette.error.main,
-    cursor: "pointer",
-  },
-
   header: {
     display: "flex",
     flexDirection: "row",
@@ -73,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CardDetailsTop({
+function EntryTop({
   userAvatar,
   username,
   body,
@@ -103,11 +93,6 @@ function CardDetailsTop({
             {formatDate(createdAt)}
           </Typography>
         </div>
-        <FontAwesomeIcon
-          onClick={closeEntryDetails}
-          className={classes.closeButton}
-          icon={["far", "times-circle"]}
-        />
       </div>
       <div className={classes.entry}>
         <Typography variant="subtitle1">{body}</Typography>
@@ -125,8 +110,4 @@ const mapStateToProps = (state) => ({
   ...state.entries.entry,
 });
 
-const mapActionsToProps = {
-  closeEntryDetails,
-};
-
-export default connect(mapStateToProps, mapActionsToProps)(CardDetailsTop);
+export default connect(mapStateToProps)(EntryTop);

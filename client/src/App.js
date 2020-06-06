@@ -26,6 +26,7 @@ import icons from "./utils/icons";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Entry from "./pages/Entry";
 
 // App Components
 import { TransitionPage } from "./theme";
@@ -55,6 +56,11 @@ function App() {
               <Route path="/" component={TransitionPage(Home)} exact />
               <AuthRoute path="/signin" component={TransitionPage(SignIn)} />
               <AuthRoute path="/signup" component={TransitionPage(SignUp)} />
+              <Route
+                path="/entry/:id"
+                component={TransitionPage(Entry)}
+                exact
+              />
             </Switch>
 
             <BottomBar />

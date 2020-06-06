@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 // Api Services
 import api from "../services/api";
 
 //Store
 import { connect } from "react-redux";
-import { closeEntryRemove, removeEntry } from "../store/actions/entriesActions";
+import { removeEntry } from "../store/actions/entriesActions";
 
 //MUI Components
 import { makeStyles } from "@material-ui/core/styles";
@@ -34,12 +35,12 @@ const useStyles = makeStyles((theme) => ({
   },
 
   title: {
-    margin: theme.spacing(1, 1, 0, 1),
+    margin: theme.spacing(2, 2, 1, 2),
     color: theme.palette.primary.dark,
   },
 
   buttons: {
-    minWidth: "250px",
+    minWidth: "200px",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -65,8 +66,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ConfirmDelete({ entry, removeEntry, closeEntryRemove, ...props }) {
+function ConfirmDelete({ entry, removeEntry, close, ...props }) {
   const classes = useStyles();
+  const history = useHistory();
   const [deleting, setDeleting] = useState(false);
 
   const remove = () => {
@@ -76,8 +78,9 @@ function ConfirmDelete({ entry, removeEntry, closeEntryRemove, ...props }) {
       .delete(entry)
       .then(() => {
         removeEntry(entry);
-        closeEntryRemove();
+        close(null);
         setDeleting(false);
+        history.push("/");
       })
       .catch((err) => {
         setDeleting(false);
@@ -89,7 +92,7 @@ function ConfirmDelete({ entry, removeEntry, closeEntryRemove, ...props }) {
     <Modal
       className={classes.modal}
       open={!!entry}
-      onClose={() => closeEntryRemove()}
+      onClose={() => close(null)}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
@@ -99,13 +102,13 @@ function ConfirmDelete({ entry, removeEntry, closeEntryRemove, ...props }) {
       <Fade in={!!entry}>
         <div className={classes.paper}>
           <Typography className={classes.title} align="center" variant="h5">
-            Are you sure?
+            Are you sure to delete this?
           </Typography>
           <div className={classes.buttons}>
             <Button
               className={classes.cancel}
               variant="contained"
-              onClick={() => closeEntryRemove()}
+              onClick={() => close(null)}
               disabled={deleting}
             >
               Cancel
@@ -129,13 +132,8 @@ function ConfirmDelete({ entry, removeEntry, closeEntryRemove, ...props }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  entry: state.entries.toRemove,
-});
-
 const mapActionsToProps = {
-  closeEntryRemove,
   removeEntry,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(ConfirmDelete);
+export default connect(null, mapActionsToProps)(ConfirmDelete);
