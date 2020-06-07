@@ -1,3 +1,4 @@
+import jwtDecode from "jwt-decode";
 import api from "../../services/api";
 import {
   SET_AUTHENTICATED,
@@ -15,6 +16,23 @@ export const initialize = () => async (dispatch) =>
       console.log(err.response);
       console.log(err);
     });
+
+export const checkAuth = () => (dispatch) => {
+  const token = localStorage.authToken;
+
+  if (token && jwtDecode(token).exp * 1000 < Date.now()) {
+    dispatch({
+      type: SET_USER,
+      payload: { credentials: {}, likes: [], notifications: [] },
+    });
+
+    dispatch({
+      type: SET_AUTHENTICATED,
+      payload: false,
+    });
+  }
+  return;
+};
 
 export const authenticate = (token) => async (dispatch) => {
   if (token) {

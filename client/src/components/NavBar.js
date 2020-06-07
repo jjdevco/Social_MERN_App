@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 //Store
 import { connect } from "react-redux";
-import { initialize } from "../store/actions/userActions";
+import { initialize, checkAuth } from "../store/actions/userActions";
 import { openEntryNew } from "../store/actions/entriesActions";
 
 // MUI Components
@@ -126,7 +126,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
+function NavBar({
+  authenticated,
+  credentials,
+  initialize,
+  checkAuth,
+  openEntryNew,
+  ...props
+}) {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -139,8 +146,13 @@ function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
   const [activeSearch, setActiveSearch] = useState(false);
 
   useEffect(() => {
-    if (authenticated) initialize();
-  }, [authenticated, initialize]);
+    if (authenticated && !credentials) initialize();
+  }, [authenticated, credentials, initialize]);
+
+  useEffect(() => {
+    console.log(path);
+    checkAuth();
+  }, [path, checkAuth]);
 
   return (
     <AppBar className={classes.bar}>
@@ -230,10 +242,12 @@ function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
 
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
+  credentials: !!state.user.credentials,
 });
 
 const mapActionsToProps = {
   initialize,
+  checkAuth,
   openEntryNew,
 };
 
