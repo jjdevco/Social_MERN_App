@@ -62,13 +62,6 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
 
-  header: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-
   username: {
     marginTop: theme.spacing(1),
     fontWeight: "bold",
@@ -78,27 +71,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
-  deleteButton: {
-    margin: theme.spacing(1, 2),
-    fontSize: "16px",
-    color: theme.palette.error.main,
-    cursor: "pointer",
-    zIndex: 200,
-    "&:hover": {
-      color: theme.palette.error.dark,
-    },
-  },
-
   date: {
     color: theme.palette.primary.light,
     fontWeight: "bold",
     wordWrap: "no-wrap",
-  },
-
-  entryContent: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "start",
   },
 
   text: {
@@ -112,16 +88,21 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
-  media: {
-    minWidth: "160px",
-    maxWidth: "160px",
-    margin: theme.spacing(1.5),
-    border: `2px solid ${theme.palette.primary.main}`,
-    boxShadow: theme.shadows[5],
-    borderRadius: "6px",
+  mediaContainer: {
+    display: "flex",
+    alignItems: "center",
     [theme.breakpoints.only("xs")]: {
       display: "none",
     },
+  },
+
+  media: {
+    margin: theme.spacing(2),
+    width: "150px",
+    maxHeight: "150px",
+    border: `2px solid ${theme.palette.primary.main}`,
+    boxShadow: theme.shadows[5],
+    borderRadius: "6px",
   },
 
   actions: {
@@ -192,29 +173,27 @@ function Card({ openEntryDetails, openEntryRemove, ...props }) {
           />
         </div>
         <div className={classes.content}>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ flexGrow: 1 }}>
-              <div className={classes.header}>
-                <Typography className={classes.username} variant="h6">
-                  @{username}
-                </Typography>
-              </div>
-              <Typography className={classes.date} variant="body2">
-                {formatDate(createdAt)}
-              </Typography>
-              <div className={classes.entryContent}>
-                <Typography className={classes.text} variant="body1">
-                  {body}
-                </Typography>
-                {media && (
-                  <div className={classes.media}>
-                    <Media src={media} height={120} />
-                  </div>
-                )}
-              </div>
+          <div className={classes.header}>
+            <Typography className={classes.username} variant="h6">
+              @{username}
+            </Typography>
+          </div>
+
+          <Typography className={classes.date} variant="body2">
+            {formatDate(createdAt)}
+          </Typography>
+
+          <Typography className={classes.text} variant="body1">
+            {body}
+          </Typography>
+        </div>
+        {media && (
+          <div className={classes.mediaContainer}>
+            <div className={classes.media}>
+              <Media src={media} height={150} />
             </div>
           </div>
-        </div>
+        )}
       </Container>
 
       <div className={classes.actions}>

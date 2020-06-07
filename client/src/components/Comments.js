@@ -6,6 +6,8 @@ import { connect } from "react-redux";
 //MUI Components
 import { makeStyles } from "@material-ui/core/styles";
 
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+
 //App Components
 import Comment from "./Comment";
 
@@ -34,16 +36,22 @@ function Comments({ comments, ...props }) {
 
   const Comments = comments
     ? comments.map((comment, index) => (
-        <Comment
-          key={index}
-          data={comment}
-          first={index === 0}
-          last={index === comments.length - 1}
-        />
+        <CSSTransition classNames="fade" key={index} timeout={300}>
+          <Comment
+            key={index}
+            data={comment}
+            first={index === 0}
+            last={index === comments.length - 1}
+          />
+        </CSSTransition>
       ))
     : "";
 
-  return <div className={classes.comments}>{Comments}</div>;
+  return (
+    <div className={classes.comments}>
+      <TransitionGroup>{Comments}</TransitionGroup>
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => ({

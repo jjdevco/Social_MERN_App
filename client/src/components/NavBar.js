@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 //Store
@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 1),
     height: "16px",
     width: "16px",
+    transition: theme.transitions.create(),
     "&:hover": {
       backgroundColor: "inherit",
       color: theme.palette.primary.dark,
@@ -128,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
 function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
   const theme = useTheme();
   const classes = useStyles();
-  const anchor = createRef();
+
   const path = useLocation().pathname;
 
   const authenticationRoute =
@@ -149,7 +150,6 @@ function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
           root: classes.toolbar,
         }}
         disableGutters
-        ref={anchor}
       >
         <div className={classes.leftMenu}>
           <IconButton
@@ -195,7 +195,7 @@ function NavBar({ authenticated, initialize, openEntryNew, ...props }) {
             >
               <FontAwesomeIcon icon="plus" />
             </IconButton>
-            <Notifications anchor={anchor} />
+            <Notifications />
           </div>
         )}
         {!authenticated && !authenticationRoute && small && (

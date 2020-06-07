@@ -129,7 +129,7 @@ function Entry({
   const [loading, setLoading] = useState(true);
   const [toDelete, setToDelete] = useState(null);
 
-  const [liked, setLiked] = useState(likes.some((el) => el.entryId === id));
+  const [liked, setLiked] = useState(false);
 
   const likeEntry = () => {
     setLiked(true);
@@ -148,19 +148,20 @@ function Entry({
   };
 
   useEffect(() => {
+    setLiked(likes.map((el) => el.entryId).indexOf(params.id) !== -1);
     api.entries
       .getOne(params.id)
-      .then(async ({ data }) => {
-        await setEntryDetails(data);
+      .then(({ data }) => {
+        setEntryDetails(data);
         return setLoading(false);
       })
       .catch((err) => console.log(err));
-  }, [params, setEntryDetails]);
+  }, [params, setEntryDetails, likes]);
 
   return loading ? (
     <CircularProgress className={classes.loader} />
   ) : (
-    <Fade in={!!id}>
+    <Fade key={id} in={!!id} timeout={600}>
       <div
         className={clsx([classes.cards, !authenticated && classes.bottomBar])}
       >
@@ -193,7 +194,7 @@ function Entry({
             )}
             <FontAwesomeIcon
               className={classes.entryDetailsIcon}
-              icon={commentsCount > 0 ? "heart" : ["far", "heart"]}
+              icon={likesCount > 0 ? "heart" : ["far", "heart"]}
             />
             <strong>{likesCount}&nbsp;</strong>
             <span className={classes.text}>
@@ -211,17 +212,19 @@ function Entry({
             )}
           </Typography>
           {userAuthenticated === username && (
-            <Typography className={classes.entryDetailsBox}>
-              <Button
-                className={classes.deleteButton}
-                variant="outlined"
-                size="small"
-                endIcon={<FontAwesomeIcon icon="trash-alt" />}
-                onClick={() => setToDelete(id)}
-              >
-                Delete
-              </Button>
-            </Typography>
+            <Fade in={userAuthenticated === username} timeout={500}>
+              <Typography className={classes.entryDetailsBox}>
+                <Button
+                  className={classes.deleteButton}
+                  variant="outlined"
+                  size="small"
+                  endIcon={<FontAwesomeIcon icon="trash-alt" />}
+                  onClick={() => setToDelete(id)}
+                >
+                  Delete
+                </Button>
+              </Typography>
+            </Fade>
           )}
         </div>
 

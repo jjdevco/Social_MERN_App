@@ -11,15 +11,20 @@ import {
 // Date to Time util
 import formatDate from "../utils/timeago";
 
+import "../styles/app.css";
+
 // MUI Components
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
+import Zoom from "@material-ui/core/Zoom";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Badge from "@material-ui/core/Badge";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
+
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -118,27 +123,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Notifications = ({
-  anchor,
   notifications,
   markNotifications,
   deleteNotifications,
 }) => {
   const classes = useStyles();
   const history = useHistory();
-  const [open, setOpen] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
   const handleClick = (e, id, remove) => {
     if ((id, remove)) {
       e.stopPropagation();
       deleteNotifications([id]);
     } else {
-      setOpen(false);
+      setAnchorEl(null);
       return history.push(`/entry/${id}`);
     }
   };
 
   const markRead = (e) => {
-    setOpen(false);
+    setAnchorEl(null);
     markNotifications(
       notifications
         .filter((el) => !el.read)
@@ -152,7 +158,7 @@ const Notifications = ({
 
   const close = (e) => {
     if (notifications.some((el) => !el.read)) markRead();
-    setOpen(false);
+    setAnchorEl(null);
   };
 
   return (
@@ -161,7 +167,7 @@ const Notifications = ({
         className={classes.menuButtton}
         color={notifications.length > 0 ? "primary" : "secondary"}
         disableFocusRipple
-        onClick={() => setOpen(true)}
+        onClick={(e) => setAnchorEl(e.currentTarget)}
       >
         <Badge
           classes={{ badge: classes.badge }}
@@ -177,16 +183,13 @@ const Notifications = ({
       </IconButton>
       <Menu
         classes={{ paper: classes.menu }}
-        anchorEl={anchor.current}
+        anchorEl={anchorEl}
         open={open}
         onClose={close}
         getContentAnchorEl={null}
+        TransitionComponent={Zoom}
         anchorOrigin={{
           vertical: "center",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
           horizontal: "right",
         }}
       >
@@ -196,39 +199,50 @@ const Notifications = ({
 
         <div className={classes.items}>
           {notifications.length > 0 ? (
-            notifications.map((el) => (
-              <MenuItem
-                className={classes.item}
-                key={el.id}
-                onClick={(e) => handleClick(e, el.entryId, false)}
-              >
-                <FontAwesomeIcon
-                  className={clsx([classes.icon, el.read && classes.read])}
-                  icon={el.type === "like" ? "heart" : "comment"}
-                />
-                <Typography style={{ flexGrow: 1 }} noWrap>
-                  <strong
-                    className={clsx([classes.sender, el.read && classes.read])}
-                  >
-                    @{el.sender}&nbsp;
-                  </strong>
-                  <span className={clsx(el.read && classes.read)}>
-                    {`${el.type}${
-                      el.type === "like" ? "d " : "ed on"
-                    } your entry`}
-                  </span>
-                  <small className={classes.date}>
-                    &nbsp;{`(${formatDate(el.createdAt)})`}
-                  </small>
-                </Typography>
-                <IconButton
-                  className={classes.delete}
-                  onClick={(e) => handleClick(e, el.id, true)}
+            <TransitionGroup>
+              {notifications.map((el) => (
+                <CSSTransition
+                  key={el.id}
+                  timeout={200}
+                  appear
+                  classNames="fade"
                 >
-                  <FontAwesomeIcon icon="trash-alt" />
-                </IconButton>
-              </MenuItem>
-            ))
+                  <MenuItem
+                    className={classes.item}
+                    onClick={(e) => handleClick(e, el.entryId, false)}
+                  >
+                    <FontAwesomeIcon
+                      className={clsx([classes.icon, el.read && classes.read])}
+                      icon={el.type === "like" ? "heart" : "comment"}
+                    />
+                    <Typography style={{ flexGrow: 1 }} noWrap>
+                      <strong
+                        className={clsx([
+                          classes.sender,
+                          el.read && classes.read,
+                        ])}
+                      >
+                        @{el.sender}&nbsp;
+                      </strong>
+                      <span className={clsx(el.read && classes.read)}>
+                        {`${el.type}${
+                          el.type === "like" ? "d " : "ed on"
+                        } your entry`}
+                      </span>
+                      <small className={classes.date}>
+                        &nbsp;{`(${formatDate(el.createdAt)})`}
+                      </small>
+                    </Typography>
+                    <IconButton
+                      className={classes.delete}
+                      onClick={(e) => handleClick(e, el.id, true)}
+                    >
+                      <FontAwesomeIcon icon="trash-alt" />
+                    </IconButton>
+                  </MenuItem>
+                </CSSTransition>
+              ))}
+            </TransitionGroup>
           ) : (
             <Typography
               className={classes.noNew}

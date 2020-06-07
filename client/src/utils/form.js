@@ -11,7 +11,7 @@ export const inputValidator = (value, validate, samePassword) => {
     error = "Should be a valid email address";
 
   if (validate.indexOf("repeatPassword") !== -1 && value !== samePassword)
-    error = "Password and Repeat Password should be equal";
+    error = "Both passwords should be equal";
 
   if (
     validate.indexOf("password") !== -1 &&

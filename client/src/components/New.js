@@ -50,8 +50,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   mediaCard: {
-    height: "150px",
-    maxWidth: "330px",
+    height: "200px",
+    maxWidth: "350px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -154,7 +154,7 @@ const Uploader = forwardRef((props, ref) => {
         )}
         {file.src && (
           <Media
-            height={150}
+            height={200}
             src={file.src}
             name={file.name}
             blob={true}

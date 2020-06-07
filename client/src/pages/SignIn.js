@@ -40,13 +40,14 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(4, 0),
     padding: theme.spacing(5),
     border: `2px solid ${theme.palette.primary.main}`,
-    [theme.breakpoints.only("sm")]: {
-      minHeight: "250px",
-      minWidth: "250px",
+    [theme.breakpoints.only("xs")]: {
+      width: "250px",
     },
-    [theme.breakpoints.up("md")]: {
-      minHeight: "400px",
-      minWidth: "400px",
+    [theme.breakpoints.up("sm")]: {
+      width: "350px",
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: "500px",
     },
   },
 
@@ -54,8 +55,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3),
     color: theme.palette.primary.main,
     fontSize: "85px",
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("sm")]: {
       fontSize: "120px",
+    },
+    [theme.breakpoints.up("lg")]: {
+      fontSize: "150px",
     },
   },
 
