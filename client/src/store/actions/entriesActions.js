@@ -33,11 +33,16 @@ export const addComment = (comment) => (dispatch) =>
     payload: comment,
   });
 
-export const getEntries = () => async (dispatch) =>
-  await api.entries
-    .getAll()
-    .then(({ data }) => dispatch({ type: SET_ENTRIES, payload: data }))
-    .catch((err) => console.log(err));
+export const getEntries = (username) => async (dispatch) =>
+  !username
+    ? await api.entries
+        .getAll()
+        .then(({ data }) => dispatch({ type: SET_ENTRIES, payload: data }))
+        .catch((err) => console.log(err))
+    : await api.entries
+        .getByUser(username)
+        .then(({ data }) => dispatch({ type: SET_ENTRIES, payload: data }))
+        .catch((err) => console.log(err));
 
 export const removeEntry = (entry) => (dispatch) =>
   dispatch({

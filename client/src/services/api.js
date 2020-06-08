@@ -53,6 +53,12 @@ export default {
         ...options,
       }),
 
+    getByUser: (username, options = {}) =>
+      axios.get(`${baseURL}/entries/user/${username}`, {
+        ...defaultOptions(),
+        ...options,
+      }),
+
     getComments: (id, options = {}) =>
       axios.get(`${baseURL}/entry/${id}/comments`, {
         ...defaultOptions(),

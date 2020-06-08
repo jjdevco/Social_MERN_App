@@ -17,6 +17,7 @@ const {
 const {
   getAllEntries,
   getEntry,
+  getEntriesByUser,
   createEntry,
   likeEntry,
   unlikeEntry,
@@ -48,6 +49,7 @@ app.use(function (req, res, next) {
 // Entries routes
 app.get("/entries", getAllEntries);
 app.get("/entry/:id", getEntry);
+app.get("/entries/user/:username", getEntriesByUser);
 app.post("/entry", verifyAuth, createEntry);
 app.post("/entry/:id/like", verifyAuth, likeEntry);
 app.post("/entry/:id/unlike", verifyAuth, unlikeEntry);

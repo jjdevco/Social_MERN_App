@@ -1,17 +1,4 @@
-import React from "react";
-
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import { makeStyles } from "@material-ui/core/styles/";
-import CSSTransition from "react-transition-group/CSSTransition";
-
-const useStyles = makeStyles((theme) => ({
-  main: {
-    display: "flex",
-    flexGrow: 1,
-    maxWidth: "1000px",
-    margin: "56px auto 0 auto",
-  },
-}));
 
 export const appTheme = createMuiTheme({
   palette: {
@@ -40,20 +27,3 @@ export const appTheme = createMuiTheme({
     },
   },
 });
-
-export const TransitionPage = (Page, previous) => {
-  const classes = useStyles();
-  return (props) => (
-    <CSSTransition
-      in={true}
-      appear={true}
-      timeout={600}
-      classNames="fade"
-      unmountOnExit
-    >
-      <main className={classes.main}>
-        <Page {...props} />
-      </main>
-    </CSSTransition>
-  );
-};

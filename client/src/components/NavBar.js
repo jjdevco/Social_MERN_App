@@ -150,7 +150,6 @@ function NavBar({
   }, [authenticated, credentials, initialize]);
 
   useEffect(() => {
-    console.log(path);
     checkAuth();
   }, [path, checkAuth]);
 

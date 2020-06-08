@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import formatDate from "../utils/timeago";
 
 // MUI Components
+import clsx from "clsx";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Avatar from "@material-ui/core/Avatar";
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     display: "flex",
     cursor: "pointer",
+    paddingRight: theme.spacing(2),
   },
 
   avatarContainer: {
@@ -83,9 +85,6 @@ const useStyles = makeStyles((theme) => ({
     wordWrap: "break-word",
     lineHeight: 1.2,
     letterSpacing: "0.001em",
-    [theme.breakpoints.only("xs")]: {
-      marginRight: theme.spacing(3),
-    },
   },
 
   mediaContainer: {
@@ -97,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   media: {
-    margin: theme.spacing(2),
+    margin: theme.spacing(2, 0, 2, 2),
     width: "150px",
     maxHeight: "150px",
     border: `2px solid ${theme.palette.primary.main}`,
@@ -183,7 +182,10 @@ function Card({ openEntryDetails, openEntryRemove, ...props }) {
             {formatDate(createdAt)}
           </Typography>
 
-          <Typography className={classes.text} variant="body1">
+          <Typography
+            className={clsx([classes.text, !media && classes.noMedia])}
+            variant="body1"
+          >
             {body}
           </Typography>
         </div>

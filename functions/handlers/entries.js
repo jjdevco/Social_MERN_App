@@ -52,6 +52,26 @@ exports.getEntry = function (req, res) {
     });
 };
 
+exports.getEntriesByUser = function (req, res) {
+  const { username } = req.params;
+  return db
+    .collection("entries")
+    .where("username", "==", username)
+    .orderBy("createdAt", "desc")
+    .get()
+    .then((data) => {
+      let entries = [];
+      data.forEach((entry) => entries.push({ id: entry.id, ...entry.data() }));
+      res.json(entries);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ message: "something went wrong, try again later..." });
+    });
+};
+
 exports.createEntry = function (req, res) {
   const { user } = req;
 

@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     boxShadow: theme.shadows[0],
-    borderRadius: 0,
+    borderRadius: "4px",
     backgroundColor: theme.palette.background.main,
   },
   media: {

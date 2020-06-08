@@ -12,6 +12,7 @@ import {
 import formatDate from "../utils/timeago";
 
 import "../styles/app.css";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // MUI Components
 import clsx from "clsx";
@@ -23,8 +24,6 @@ import Badge from "@material-ui/core/Badge";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

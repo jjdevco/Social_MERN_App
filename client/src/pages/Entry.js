@@ -34,20 +34,13 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
   },
 
-  cards: {
-    minHeight: "100%",
+  container: {
     display: "flex",
     flexDirection: "column",
-    margin: "auto",
-    borderStyle: "none solid none solid",
-    borderWidth: "4px",
-    borderColor: theme.palette.primary.main,
+    width: "100%",
+    border: `4px solid ${theme.palette.primary.main}`,
+    borderRadius: "5px",
     boxShadow: theme.shadows[5],
-    width: "600px",
-    [theme.breakpoints.only("xs")]: {
-      width: "100%",
-      margin: theme.spacing(0, 3),
-    },
   },
 
   entryDetails: {
@@ -163,7 +156,10 @@ function Entry({
   ) : (
     <Fade key={id} in={!!id} timeout={600}>
       <div
-        className={clsx([classes.cards, !authenticated && classes.bottomBar])}
+        className={clsx([
+          classes.container,
+          !authenticated && classes.bottomBar,
+        ])}
       >
         <div>
           <EntryTop />
