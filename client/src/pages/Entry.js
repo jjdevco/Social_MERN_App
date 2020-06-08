@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    margin: theme.spacing(1, 0),
     border: `4px solid ${theme.palette.primary.main}`,
     borderRadius: "5px",
     boxShadow: theme.shadows[5],

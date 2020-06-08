@@ -1,10 +1,11 @@
 import React from "react";
-import clsx from "clsx";
+import { useHistory } from "react-router-dom";
 
 // Date to Time util
 import formatDate from "../utils/timeago";
 
 // MUI Components
+import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Avatar from "@material-ui/core/Avatar";
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     color: theme.palette.primary.main,
     marginRight: theme.spacing(1),
+    cursor: "pointer",
     "&:hover": {
       textDecoration: "underline",
     },
@@ -86,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Comment({ first, last, ...props }) {
   const classes = useStyles();
-
+  const history = useHistory();
   const { username, userAvatar, body, createdAt } = props.data;
 
   return (
@@ -121,7 +123,11 @@ function Comment({ first, last, ...props }) {
       </div>
       <div className={classes.content}>
         <div className={classes.header}>
-          <Typography className={classes.username} variant="subtitle1">
+          <Typography
+            className={classes.username}
+            variant="subtitle1"
+            onClick={() => history.push(`/user/${username}`)}
+          >
             @{username}
           </Typography>
 

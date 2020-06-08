@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-evenly",
     margin: theme.spacing(4, 0),
     padding: theme.spacing(5),
-    border: `2px solid ${theme.palette.primary.main}`,
+    border: `4px solid ${theme.palette.primary.main}`,
     [theme.breakpoints.only("xs")]: {
       width: "250px",
     },

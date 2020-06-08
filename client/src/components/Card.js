@@ -147,6 +147,12 @@ function Card({ openEntryDetails, openEntryRemove, ...props }) {
     media,
     createdAt,
   } = props.data;
+
+  const toProfile = (e) => {
+    e.stopPropagation();
+    return history.push(`/user/${username}`);
+  };
+
   return (
     <Container className={classes.root} component="div" disableGutters>
       <Container
@@ -173,7 +179,11 @@ function Card({ openEntryDetails, openEntryRemove, ...props }) {
         </div>
         <div className={classes.content}>
           <div className={classes.header}>
-            <Typography className={classes.username} variant="h6">
+            <Typography
+              className={classes.username}
+              variant="h6"
+              onClick={toProfile}
+            >
               @{username}
             </Typography>
           </div>

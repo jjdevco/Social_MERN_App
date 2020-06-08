@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useHistory } from "react-router-dom";
 //Store
 import { connect } from "react-redux";
 
@@ -73,6 +73,7 @@ function EntryTop({
   ...props
 }) {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
     <div>
@@ -86,7 +87,11 @@ function EntryTop({
           {username ? username.charAt(0).toUpperCase() : ""}
         </Avatar>
         <div className={classes.headerText}>
-          <Typography className={classes.headerTextUsername}>
+          <Typography
+            className={classes.headerTextUsername}
+            variant="h6"
+            onClick={() => history.push(`/user/${username}`)}
+          >
             @{username}
           </Typography>
           <Typography className={classes.headerTextDate} variant="body2">
