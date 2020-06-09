@@ -54,7 +54,7 @@ function BottomBar({ authenticated, ...props }) {
   const path = useLocation().pathname;
   const authenticationRoute =
     path === "/signin" || path === "/signup" ? true : false;
-  const small = useMediaQuery(theme.breakpoints.only("xs"));
+  const small = useMediaQuery(theme.breakpoints.down(1000));
 
   return !authenticated && !authenticationRoute && small ? (
     <AppBar

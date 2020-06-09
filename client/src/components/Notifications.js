@@ -30,9 +30,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const useStyles = makeStyles((theme) => ({
   menuButtton: {
-    margin: theme.spacing(0, 1),
-    height: "16px",
-    width: "16px",
     "&:hover": {
       backgroundColor: "inherit",
       color: theme.palette.primary.dark,
@@ -165,7 +162,6 @@ const Notifications = ({
       <IconButton
         className={classes.menuButtton}
         color={notifications.length > 0 ? "primary" : "secondary"}
-        disableFocusRipple
         onClick={(e) => setAnchorEl(e.currentTarget)}
       >
         <Badge

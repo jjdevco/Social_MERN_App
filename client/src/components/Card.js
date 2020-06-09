@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     display: "flex",
     cursor: "pointer",
-    paddingRight: theme.spacing(2),
+    paddingRight: theme.spacing(4),
   },
 
   avatarContainer: {
@@ -87,18 +87,9 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: "0.001em",
   },
 
-  mediaContainer: {
-    display: "flex",
-    alignItems: "center",
-    [theme.breakpoints.only("xs")]: {
-      display: "none",
-    },
-  },
-
   media: {
-    margin: theme.spacing(2, 0, 2, 2),
-    width: "150px",
-    maxHeight: "150px",
+    marginBottom: theme.spacing(2),
+    width: "100%",
     border: `2px solid ${theme.palette.primary.main}`,
     boxShadow: theme.shadows[5],
     borderRadius: "6px",
@@ -198,14 +189,13 @@ function Card({ openEntryDetails, openEntryRemove, ...props }) {
           >
             {body}
           </Typography>
-        </div>
-        {media && (
-          <div className={classes.mediaContainer}>
+
+          {media && (
             <div className={classes.media}>
-              <Media src={media} height={150} />
+              <Media src={media} />
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </Container>
 
       <div className={classes.actions}>

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Media({ height = 100, blob = false, name, src, ...props }) {
+function Media({ height = "100%", blob = false, name, src, ...props }) {
   const classes = useStyles();
 
   const isImage = /(?:([^:/?#]+):)?(?:([^/?#]*))?([^?#]*\.(?:jpe?g|gif|png))(?:\?([^#]*))?(?:#(.*))?/.test(

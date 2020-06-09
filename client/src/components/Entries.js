@@ -9,7 +9,6 @@ import { getEntries } from "../store/actions/entriesActions";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Fade from "@material-ui/core/Fade";
-import Container from "@material-ui/core/Container";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 // APP Components
@@ -17,6 +16,7 @@ import Card from "./Card";
 
 const useStyles = makeStyles((theme) => ({
   loading: {
+    height: "100vh",
     display: "flex",
     flexDirection: "row",
     margin: "auto",
@@ -26,16 +26,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "start",
-  },
-
-  bottomBar: {
-    [theme.breakpoints.only("xs")]: {
-      marginBottom: "56px",
-    },
+    width: "100%",
+    margin: theme.spacing(1, 0),
   },
 }));
 
-function Home({ authenticated, getEntries, entries, ...props }) {
+function Entries({ authenticated, getEntries, entries, ...props }) {
   const classes = useStyles();
   const { username } = useParams();
   const [loading, setLoading] = useState(true);
@@ -54,16 +50,14 @@ function Home({ authenticated, getEntries, entries, ...props }) {
       : "";
 
   return loading ? (
-    <CircularProgress className={classes.loading} color="secondary" />
+    <CircularProgress className={classes.loading} color="primary" />
   ) : (
     <Fade in={!loading} timeout={400}>
-      <Container
+      <div
         className={clsx([classes.entries, !authenticated && classes.bottomBar])}
-        component="div"
-        disableGutters
       >
         {recentEntries}
-      </Container>
+      </div>
     </Fade>
   );
 }
@@ -77,4 +71,4 @@ const mapActionsToProps = {
   getEntries,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(Home);
+export default connect(mapStateToProps, mapActionsToProps)(Entries);

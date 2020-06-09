@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useHistory } from "react-router-dom";
 
 //Store
 import { connect } from "react-redux";
-import { initialize, checkAuth } from "../store/actions/userActions";
+import { checkAuth } from "../store/actions/userActions";
 import { openEntryNew } from "../store/actions/entriesActions";
 
 // MUI Components
 import clsx from "clsx";
-import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 
@@ -33,53 +31,53 @@ const useStyles = makeStyles((theme) => ({
   },
 
   toolbar: {
+    width: "100%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    height: "56px",
-    padding: theme.spacing(0, 1),
-    [theme.breakpoints.up("md")]: {
-      margin: "0 auto",
-      width: "950px",
+    justifyContent: "center",
+    margin: "0 auto",
+    [theme.breakpoints.down(1000)]: {
+      maxWidth: "700px",
     },
   },
 
-  leftMenu: {
+  left: {
+    height: "56px",
     display: "flex",
+    flexDirection: "row",
     flexGrow: 1,
-    flexWrap: "no-wrap",
+    maxWidth: "650px",
+    marginLeft: theme.spacing(1),
   },
 
   iconButton: {
-    margin: theme.spacing(0, 1),
-    height: "16px",
-    width: "16px",
+    width: "40px",
+    height: "40px",
+    margin: "auto 0",
     transition: theme.transitions.create(),
     "&:hover": {
-      backgroundColor: "inherit",
+      backgroundColor: fade(theme.palette.primary.light, 0.2),
       color: theme.palette.primary.dark,
     },
   },
 
   search: {
     display: "flex",
+    width: "100%",
+    maxWidth: "550px",
     position: "relative",
+    margin: theme.spacing(1, 2, 1, 1),
     borderWidth: "2px",
     borderStyle: "solid",
     borderColor: "transparent",
     borderRadius: "10px",
-    backgroundColor: fade(theme.palette.background.dark, 0.6),
-    marginRight: theme.spacing(1),
     padding: theme.spacing(0, 2),
+    backgroundColor: fade(theme.palette.background.dark, 0.6),
     transition: theme.transitions.create(),
-    [theme.breakpoints.up("sm")]: {
-      width: "auto",
-    },
   },
 
   searchActive: {
-    flexGrow: 1,
     borderColor: theme.palette.primary.main,
     backgroundColor: fade(theme.palette.background.dark, 0.3),
   },
@@ -105,13 +103,12 @@ const useStyles = makeStyles((theme) => ({
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(2)}px)`,
-    width: "100%",
-    [theme.breakpoints.only("sm")]: {
-      minWidth: "27ch",
-    },
-    [theme.breakpoints.up("md")]: {
-      minWidth: "40ch",
-    },
+  },
+
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    marginRight: theme.spacing(1),
   },
 
   button: {
@@ -126,32 +123,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function usePrevious(value) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
+
 function NavBar({
   authenticated,
   credentials,
   initialize,
   checkAuth,
   openEntryNew,
+  location,
   ...props
 }) {
-  const theme = useTheme();
   const classes = useStyles();
-
-  const path = useLocation().pathname;
-
-  const authenticationRoute =
-    path === "/signin" || path === "/signup" ? true : false;
-  const small = useMediaQuery(theme.breakpoints.up("sm"));
+  const history = useHistory();
+  const pathname = history.location.pathname;
 
   const [activeSearch, setActiveSearch] = useState(false);
+  const [path, setPath] = useState(pathname);
 
-  useEffect(() => {
-    if (authenticated && !credentials) initialize();
-  }, [authenticated, credentials, initialize]);
+  const prevPath = usePrevious(path);
+
+  const handleGo = (e) => {
+    return path !== "/" ? history.goBack() : window.location.reload(false);
+  };
 
   useEffect(() => {
     checkAuth();
-  }, [path, checkAuth]);
+    setPath(pathname);
+  }, [pathname, checkAuth]);
 
   return (
     <AppBar className={classes.bar}>
@@ -162,15 +169,15 @@ function NavBar({
         }}
         disableGutters
       >
-        <div className={classes.leftMenu}>
+        <div className={classes.left}>
           <IconButton
             className={classes.iconButton}
-            component={Link}
             color="primary"
-            to="/"
-            disableFocusRipple
+            onClick={handleGo}
           >
-            <FontAwesomeIcon icon="home" />
+            <FontAwesomeIcon
+              icon={!!prevPath && path !== "/" ? "arrow-left" : "home"}
+            />
           </IconButton>
           <div
             className={clsx([
@@ -197,11 +204,10 @@ function NavBar({
           </div>
         </div>
         {authenticated && (
-          <div style={{ display: "flex", flexDirection: "row" }}>
+          <div className={classes.buttons}>
             <IconButton
               className={classes.iconButton}
               color="primary"
-              disableFocusRipple
               onClick={() => openEntryNew()}
             >
               <FontAwesomeIcon icon="plus" />
@@ -209,30 +215,7 @@ function NavBar({
             <Notifications />
           </div>
         )}
-        {!authenticated && !authenticationRoute && small && (
-          <div>
-            <Button
-              className={classes.button}
-              color="primary"
-              variant="outlined"
-              component={Link}
-              to="/signin"
-            >
-              Sign In
-            </Button>
-            <Button
-              className={classes.button}
-              color="primary"
-              variant="contained"
-              size="medium"
-              component={Link}
-              to="/signup"
-              disableElevation
-            >
-              Sign Up
-            </Button>
-          </div>
-        )}
+
         {authenticated && <New />}
       </Toolbar>
     </AppBar>
@@ -245,7 +228,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = {
-  initialize,
   checkAuth,
   openEntryNew,
 };

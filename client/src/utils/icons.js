@@ -15,6 +15,7 @@ import {
   faBell as faBellFull,
   faPhotoVideo,
   faComment,
+  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faComments,
@@ -47,6 +48,7 @@ const icons = [
   faBellFull,
   faBell,
   faPhotoVideo,
+  faArrowLeft,
 ];
 
 export default icons;

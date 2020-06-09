@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    margin: theme.spacing(1, 0),
+    margin: theme.spacing(2, 0),
     border: `4px solid ${theme.palette.primary.main}`,
     borderRadius: "5px",
     boxShadow: theme.shadows[5],
@@ -96,12 +96,6 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.error.main,
     color: theme.palette.error.main,
   },
-
-  bottomBar: {
-    [theme.breakpoints.only("xs")]: {
-      marginBottom: "54px",
-    },
-  },
 }));
 
 function Entry({
@@ -156,12 +150,7 @@ function Entry({
     <CircularProgress className={classes.loader} />
   ) : (
     <Fade key={id} in={!!id} timeout={600}>
-      <div
-        className={clsx([
-          classes.container,
-          !authenticated && classes.bottomBar,
-        ])}
-      >
+      <div className={clsx([classes.container])}>
         <div>
           <EntryTop />
           <Input type={"comments"} />
