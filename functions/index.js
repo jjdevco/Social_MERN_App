@@ -8,7 +8,7 @@ const {
   signUp,
   signIn,
   getUserInfo,
-  getUserDetails,
+  getUserProfile,
   updateUserDetails,
   uploadAvatar,
   onAvatarChange,
@@ -46,6 +46,14 @@ app.use(function (req, res, next) {
   next();
 });
 
+// Users routes
+app.get("/user", verifyAuth, getUserInfo);
+app.get("/user/profile/:username", getUserProfile);
+app.post("/signup", signUp);
+app.post("/signin", signIn);
+app.post("/user/details", verifyAuth, updateUserDetails);
+app.post("/user/avatar", verifyAuth, uploadAvatar);
+
 // Entries routes
 app.get("/entries", getAllEntries);
 app.get("/entry/:id", getEntry);
@@ -58,14 +66,6 @@ app.delete("/entry/:id", verifyAuth, deleteEntry);
 // Comments routes
 app.get("/entry/:id/comments", getEntryComments);
 app.post("/entry/:id/comment", verifyAuth, commentOnEntry);
-
-// Users routes
-app.get("/user", verifyAuth, getUserInfo);
-app.get("/user/:username", getUserDetails);
-app.post("/signup", signUp);
-app.post("/signin", signIn);
-app.post("/user/details", verifyAuth, updateUserDetails);
-app.post("/user/avatar", verifyAuth, uploadAvatar);
 
 // Notifications routes
 app.post("/notifications/read", verifyAuth, markNotificationsRead);

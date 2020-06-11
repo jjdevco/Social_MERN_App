@@ -37,13 +37,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     margin: "0 auto",
+    padding: theme.spacing(0.5, 0),
+
     [theme.breakpoints.down(1000)]: {
       maxWidth: "700px",
     },
   },
 
   left: {
-    height: "56px",
     display: "flex",
     flexDirection: "row",
     flexGrow: 1,
@@ -52,9 +53,6 @@ const useStyles = makeStyles((theme) => ({
   },
 
   iconButton: {
-    width: "40px",
-    height: "40px",
-    margin: "auto 0",
     transition: theme.transitions.create(),
     "&:hover": {
       backgroundColor: fade(theme.palette.primary.light, 0.2),
@@ -67,11 +65,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     maxWidth: "550px",
     position: "relative",
-    margin: theme.spacing(1, 2, 1, 1),
     borderWidth: "2px",
     borderStyle: "solid",
     borderColor: "transparent",
     borderRadius: "10px",
+    margin: theme.spacing(0.5, 1),
     padding: theme.spacing(0, 2),
     backgroundColor: fade(theme.palette.background.dark, 0.6),
     transition: theme.transitions.create(),
@@ -109,17 +107,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     marginRight: theme.spacing(1),
-  },
-
-  button: {
-    margin: theme.spacing(0, 1),
-    borderRadius: "15px",
-    borderWidth: "2px",
-    textTransform: "none",
-    fontWeight: "bold",
-    "&:hover": {
-      borderWidth: "2px",
-    },
   },
 }));
 

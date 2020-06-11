@@ -73,8 +73,23 @@ exports.signUp = function (req, res) {
   );
 };
 
+exports.getUserProfile = function (req, res) {
+  const { username } = req.params;
+  return db
+    .doc(`/users/${username}`)
+    .get()
+    .then((user) => {
+      if (user.exists) res.json({ ...user.data() });
+      else res.status(404).json({ error: "User not found." });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    });
+};
+
 exports.getUserInfo = function (req, res) {
-  let user = {};
+  const user = {};
   return db
     .doc(`/users/${req.user.username}`)
     .get()
@@ -109,37 +124,6 @@ exports.getUserInfo = function (req, res) {
     .catch((err) => {
       console.error(err);
       return res.status(500).json({ error: err.code });
-    });
-};
-
-exports.getUserDetails = function (req, res) {
-  const { username } = req.params;
-  let user = {};
-  return db
-    .doc(`/users/${username}`)
-    .get()
-    .then((userRecord) => {
-      if (userRecord.exists) {
-        user = userRecord.data();
-        return db
-          .collection("entries")
-          .where("username", "==", username)
-          .orderBy("createdAt", "desc")
-          .get();
-      } else throw Error("invalid-username");
-    })
-    .then((entries) => {
-      user.entries = [];
-      entries.forEach((entry) =>
-        user.entries.push({ id: entry.id, ...entry.data() })
-      );
-      return res.json(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      return err.message === "invalid-username"
-        ? res.status(404).json({ error: "User not found." })
-        : res.status(500).json({ error: err.code });
     });
 };
 
@@ -194,12 +178,12 @@ exports.uploadAvatar = function (req, res) {
         () =>
           `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${img.fileName}?alt=media`
       )
-      .then((imgUrl) =>
-        db.doc(`/users/${req.user.username}`).update({
+      .then(async (imgUrl) => {
+        await db.doc(`/users/${req.user.username}`).update({
           avatarUrl: imgUrl,
-        })
-      )
-      .then(() => res.json({ message: "Image upload successfully..." }))
+        });
+        return res.send(imgUrl);
+      })
       .catch((err) => {
         console.error(err);
         return res.status(500).json({ error: err.code });

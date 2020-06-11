@@ -32,6 +32,24 @@ export default {
         ...defaultOptions(),
         ...options,
       }),
+
+    getProfile: (username, options = {}) =>
+      axios.get(`${baseURL}/user/profile/${username}`, {
+        ...defaultOptions(),
+        ...options,
+      }),
+
+    changeAvatar: (data, options = {}) =>
+      axios.post(`${baseURL}/user/avatar`, data, {
+        ...defaultOptions(),
+        ...options,
+      }),
+
+    updateInfo: (data, options = {}) =>
+      axios.post(`${baseURL}/user/details`, data, {
+        ...defaultOptions(),
+        ...options,
+      }),
   },
 
   entries: {

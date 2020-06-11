@@ -93,11 +93,13 @@ function ConfirmDelete({ entry, removeEntry, close, ...props }) {
       className={classes.modal}
       open={!!entry}
       onClose={() => close(null)}
-      closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 300,
       }}
+      closeAfterTransition
+      disableAutoFocus
+      disableEnforceFocus
     >
       <Fade in={!!entry}>
         <div className={classes.paper}>

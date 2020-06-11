@@ -13,6 +13,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
+  spacer: { height: theme.spacing(7) },
+
   appBar: {
     display: "flex",
     top: "auto",
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.light,
   },
 
-  root: {
+  toolbar: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -52,46 +54,48 @@ function BottomBar({ authenticated, ...props }) {
   const theme = useTheme();
   const classes = useStyles();
   const path = useLocation().pathname;
+  const small = useMediaQuery(theme.breakpoints.down(1000));
   const authenticationRoute =
     path === "/signin" || path === "/signup" ? true : false;
-  const small = useMediaQuery(theme.breakpoints.down(1000));
 
   return !authenticated && !authenticationRoute && small ? (
-    <AppBar
-      color="transparent"
-      classes={{
-        root: classes.appBar,
-      }}
-    >
-      <Toolbar
-        variant="dense"
+    <div className={classes.spacer}>
+      <AppBar
+        color="transparent"
         classes={{
-          root: classes.root,
+          root: classes.appBar,
         }}
-        disableGutters
       >
-        <Button
-          className={classes.button}
-          color="primary"
-          variant="outlined"
-          component={Link}
-          to="/signin"
+        <Toolbar
+          variant="dense"
+          classes={{
+            root: classes.toolbar,
+          }}
+          disableGutters
         >
-          Sign In
-        </Button>
-        <Button
-          className={classes.button}
-          color="primary"
-          variant="contained"
-          size="medium"
-          component={Link}
-          to="/signup"
-          disableElevation
-        >
-          Sign Up
-        </Button>
-      </Toolbar>
-    </AppBar>
+          <Button
+            className={classes.button}
+            color="primary"
+            variant="outlined"
+            component={Link}
+            to="/signin"
+          >
+            Sign In
+          </Button>
+          <Button
+            className={classes.button}
+            color="primary"
+            variant="contained"
+            size="medium"
+            component={Link}
+            to="/signup"
+            disableElevation
+          >
+            Sign Up
+          </Button>
+        </Toolbar>
+      </AppBar>
+    </div>
   ) : (
     ""
   );

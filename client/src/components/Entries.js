@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { getEntries } from "../store/actions/entriesActions";
 
 //MUI Components
-import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Fade from "@material-ui/core/Fade";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -53,11 +52,7 @@ function Entries({ authenticated, getEntries, entries, ...props }) {
     <CircularProgress className={classes.loading} color="primary" />
   ) : (
     <Fade in={!loading} timeout={400}>
-      <div
-        className={clsx([classes.entries, !authenticated && classes.bottomBar])}
-      >
-        {recentEntries}
-      </div>
+      <div className={classes.entries}>{recentEntries}</div>
     </Fade>
   );
 }

@@ -1,11 +1,16 @@
 import jwtDecode from "jwt-decode";
+
 import api from "../../services/api";
 import {
   SET_AUTHENTICATED,
   SET_USER,
+  SET_PROFILE,
   MARK_NOTIFICATIONS_READ,
   REMOVE_NOTIFICATION,
   REMOVE_ALL_NOTIFICATIONS,
+  UPDATE_AVATAR,
+  UPDATE_DETAILS,
+  CLEAR_USER,
 } from "../types";
 
 export const checkAuth = () => (dispatch, getState) => {
@@ -58,6 +63,18 @@ export const authenticate = (token) => async (dispatch) => {
   }
 };
 
+export const getProfile = (username) => (dispatch) => {
+  return api.user
+    .getProfile(username)
+    .then(({ data }) =>
+      dispatch({
+        type: SET_PROFILE,
+        payload: data,
+      })
+    )
+    .catch((err) => console.log(err));
+};
+
 export const markNotifications = (notifications) => async (dispatch) => {
   await dispatch({ type: MARK_NOTIFICATIONS_READ, payload: notifications });
   return api.notifications
@@ -83,4 +100,23 @@ export const deleteNotifications = (notifications) => async (dispatch) => {
       console.log(err.response);
       console.log(err);
     });
+};
+
+export const updateAvatar = (url) => (dispatch) =>
+  dispatch({
+    type: UPDATE_AVATAR,
+    payload: url,
+  });
+
+export const updateDetails = (data) => (dispatch) =>
+  dispatch({
+    type: UPDATE_DETAILS,
+    payload: data,
+  });
+
+export const logOut = () => (dispatch) => {
+  localStorage.removeItem("authToken");
+  return dispatch({
+    type: CLEAR_USER,
+  });
 };

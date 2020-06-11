@@ -165,6 +165,7 @@ const Notifications = ({
         onClick={(e) => setAnchorEl(e.currentTarget)}
       >
         <Badge
+          ref={anchorEl}
           classes={{ badge: classes.badge }}
           badgeContent={notifications.filter((el) => !el.read).length}
           color="secondary"
@@ -185,7 +186,11 @@ const Notifications = ({
         TransitionComponent={Zoom}
         anchorOrigin={{
           vertical: "center",
-          horizontal: "right",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
         }}
       >
         <Typography className={classes.title} align="center">

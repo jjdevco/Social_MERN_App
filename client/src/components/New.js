@@ -144,7 +144,11 @@ const Uploader = forwardRef((props, ref) => {
 
   return (
     <div className={classes.mediaContainer}>
-      <label className={classes.mediaCard} htmlFor="upload-media">
+      <div
+        className={classes.mediaCard}
+        htmlFor="upload-media"
+        onClick={() => ref.current.click()}
+      >
         {!file.src && (
           <FontAwesomeIcon
             className={classes.mediaCardIcon}
@@ -161,7 +165,7 @@ const Uploader = forwardRef((props, ref) => {
             controls={false}
           />
         )}
-      </label>
+      </div>
       <input
         className={classes.mediaInput}
         ref={ref}
@@ -205,11 +209,13 @@ function New({ open, closeEntryNew, ...props }) {
       className={classes.modal}
       open={open}
       onClose={() => closeEntryNew()}
-      closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 300,
       }}
+      closeAfterTransition
+      disableAutoFocus
+      disableEnforceFocus
     >
       <Fade in={open}>
         <div className={classes.paper}>
