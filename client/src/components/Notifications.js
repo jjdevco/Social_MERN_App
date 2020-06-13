@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
 // Router
@@ -17,7 +17,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // MUI Components
 import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
+import { fade, makeStyles } from "@material-ui/core/styles";
 import Zoom from "@material-ui/core/Zoom";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -35,7 +35,8 @@ import * as timeago from "timeago.js";
 const useStyles = makeStyles((theme) => ({
   menuButtton: {
     "&:hover": {
-      backgroundColor: "inherit",
+      // backgroundColor: "inherit",
+      backgroundColor: fade(theme.palette.primary.light, 0.2),
       color: theme.palette.primary.dark,
     },
   },
@@ -123,22 +124,22 @@ const Notifications = ({
 }) => {
   const classes = useStyles();
   const history = useHistory();
+  const anchorEl = useRef();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [open, setOpen] = useState(false);
 
   const handleClick = (e, id, remove) => {
     if ((id, remove)) {
       e.stopPropagation();
       deleteNotifications([id]);
     } else {
-      setAnchorEl(null);
+      setOpen(false);
       return history.push(`/entry/${id}`);
     }
   };
 
   const markRead = (e) => {
-    setAnchorEl(null);
+    setOpen(false);
     markNotifications(
       notifications
         .filter((el) => !el.read)
@@ -152,15 +153,15 @@ const Notifications = ({
 
   const close = (e) => {
     if (notifications.some((el) => !el.read)) markRead();
-    setAnchorEl(null);
+    setOpen(false);
   };
 
   return (
     <div>
       <IconButton
         className={classes.menuButtton}
-        color={notifications.length > 0 ? "primary" : "secondary"}
-        onClick={(e) => setAnchorEl(e.currentTarget)}
+        color="primary"
+        onClick={(e) => setOpen(true)}
       >
         <Badge
           ref={anchorEl}
@@ -177,7 +178,7 @@ const Notifications = ({
       </IconButton>
       <Menu
         classes={{ paper: classes.menu }}
-        anchorEl={anchorEl}
+        anchorEl={anchorEl.current}
         open={open}
         onClose={close}
         getContentAnchorEl={null}

@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-evenly",
-    padding: theme.spacing(2),
+    padding: theme.spacing(1, 2),
   },
 
   title: {
@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignSelf: "center",
     position: "relative",
+    marginTop: theme.spacing(1),
   },
 
   avatar: {
@@ -112,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   loading: {
-    height: "250px",
+    height: "100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -183,6 +184,7 @@ function Profile({
   updateAvatar,
   updateDetails,
   logOut,
+  small,
 }) {
   const classes = useStyles();
 
@@ -192,7 +194,8 @@ function Profile({
   const match =
     pathname.startsWith("/user/") && userLogged.username !== username;
 
-  const data = match && userLogged.username !== username ? profile : userLogged;
+  const data =
+    match && !small && userLogged.username !== username ? profile : userLogged;
 
   const input = useRef();
 

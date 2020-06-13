@@ -64,7 +64,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    flexGrow: 1,
+  },
+
+  headerText: {
+    width: "max-content",
   },
 
   username: {
@@ -171,7 +174,7 @@ function Card({
           />
         </div>
         <div className={classes.content}>
-          <div className={classes.header}>
+          <div className={classes.headerText}>
             <Typography
               className={classes.username}
               variant="h6"
@@ -179,12 +182,11 @@ function Card({
             >
               @{username}
             </Typography>
+
+            <Typography className={classes.date} variant="body2">
+              {timeago.format(createdAt, "en_EN")}
+            </Typography>
           </div>
-
-          <Typography className={classes.date} variant="body2">
-            {timeago.format(createdAt, "en_EN")}
-          </Typography>
-
           <Typography
             className={clsx([classes.text, !media && classes.noMedia])}
             variant="body1"

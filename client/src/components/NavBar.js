@@ -12,12 +12,18 @@ import { openEntryNew } from "../store/actions/entriesActions";
 // APP Components
 import New from "./New";
 import Notifications from "./Notifications";
+import Profile from "./Profile";
 
 // MUI Components
 import clsx from "clsx";
-import { fade, makeStyles } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
+import Fade from "@material-ui/core/Fade";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 
@@ -106,15 +112,52 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     marginRight: theme.spacing(1),
   },
+
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  paper: {
+    width: "250px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    border: `4px solid ${theme.palette.primary.main}`,
+    boxShadow: theme.shadows[5],
+    borderRadius: "10px",
+    backgroundColor: theme.palette.background.light,
+  },
+
+  divider: {
+    width: "inherit",
+    borderBottom: `2px solid ${theme.palette.primary.main}`,
+  },
+
+  closeButton: {
+    margin: theme.spacing(1.5, 0),
+    backgroundColor: theme.palette.error.main,
+    color: theme.palette.error.contrastText,
+    transition: theme.transitions.create(),
+    "&:hover": {
+      backgroundColor: theme.palette.error.dark,
+    },
+  },
 }));
 
 function NavBar({ authenticated, checkAuth, openEntryNew }) {
+  const theme = useTheme();
   const classes = useStyles();
   const history = useHistory();
   const pathname = history.location.pathname;
 
   const [activeSearch, setActiveSearch] = useState(false);
   const [path, setPath] = useState(pathname);
+  const [profile, setProfile] = useState(false);
+
+  const small = useMediaQuery(theme.breakpoints.down(1000));
 
   const handleGo = (e) => {
     return path !== "/" ? history.goBack() : window.location.reload(false);
@@ -175,11 +218,49 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
             >
               <FontAwesomeIcon icon="plus" />
             </IconButton>
+
             <Notifications />
+
+            {small && (
+              <IconButton
+                className={classes.iconButton}
+                color="primary"
+                onClick={() => setProfile(true)}
+              >
+                <FontAwesomeIcon icon={"user-circle"} />
+              </IconButton>
+            )}
           </div>
         )}
-
-        {authenticated && <New />}
+        {authenticated && <New />}{" "}
+        {authenticated && small && (
+          <Modal
+            className={classes.modal}
+            open={profile}
+            onClose={() => setProfile(false)}
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 300,
+            }}
+            closeAfterTransition
+            disableAutoFocus
+            disableEnforceFocus
+          >
+            <Fade in={profile}>
+              <div className={classes.paper}>
+                <Profile small={small} />
+                <div className={classes.divider}></div>
+                <Button
+                  className={classes.closeButton}
+                  variant="contained"
+                  onClick={() => setProfile(false)}
+                >
+                  Close
+                </Button>
+              </div>
+            </Fade>
+          </Modal>
+        )}
       </Toolbar>
     </AppBar>
   );

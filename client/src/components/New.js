@@ -225,7 +225,7 @@ function New({ open, closeEntryNew }) {
             className={classes.closeButton}
             icon={["far", "times-circle"]}
           />
-          <Input ref={input} type="entries" />
+          <Input media={input} type="entries" />
           <Uploader ref={input} />
         </div>
       </Fade>
@@ -242,8 +242,8 @@ const mapActionsToProps = {
 };
 
 New.propTypes = {
-  open: PropTypes.bool,
-  closeEntryNew: PropTypes.func,
+  open: PropTypes.bool.isRequired,
+  closeEntryNew: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(New);

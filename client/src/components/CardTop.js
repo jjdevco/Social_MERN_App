@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
   },
 
   headerText: {
-    flexGrow: 1,
     margin: theme.spacing(0.5, 2, 0, 2),
   },
 

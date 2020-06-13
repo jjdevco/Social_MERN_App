@@ -39,11 +39,7 @@ function Cards({ getEntries, entries }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
-      await getEntries(username);
-      return setLoading(false);
-    };
-    fetch();
+    getEntries(username).then(() => setLoading(false));
   }, [getEntries, username]);
 
   let recentEntries =

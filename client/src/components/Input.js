@@ -100,13 +100,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Input({
-  ref,
   type,
   authenticated,
   entryId,
   addEntry,
   addComment,
   credentials,
+  media,
 }) {
   const history = useHistory();
   const location = useLocation();
@@ -131,11 +131,11 @@ function Input({
     if (type === "entries") {
       content = new FormData();
       content.append("body", input);
-      if (ref.current.files[0])
+      if (media.current.files[0])
         content.append(
           "media",
-          ref.current.files[0],
-          ref.current.files[0].name
+          media.current.files[0],
+          media.current.files[0].name
         );
     } else {
       content.id = entryId;
@@ -174,7 +174,7 @@ function Input({
       setMaxChars(0);
       setSending(false);
     };
-  });
+  }, []);
 
   return (
     <div className={classes.input}>
@@ -248,7 +248,7 @@ const mapActionsToProps = {
 };
 
 Input.propTypes = {
-  ref: PropTypes.object,
+  media: PropTypes.object,
   authenticated: PropTypes.bool,
   type: PropTypes.string,
   entryId: PropTypes.string,
