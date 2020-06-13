@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useHistory, useParams } from "react-router-dom";
 
-//Store
+// Store
 import { connect } from "react-redux";
-import {
-  updateLikesCount,
-  setEntryDetails,
-} from "../store/actions/entriesActions";
+import { updateLikesCount, setEntry } from "../store/actions/entriesActions";
 
-// Api Services
+// Api
 import api from "../services/api";
 
-//MUI Components
+// MUI Components
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Fade from "@material-ui/core/Fade";
@@ -20,11 +20,11 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 
-//App Components
-import EntryTop from "../components/EntryTop";
-import Input from "../components/Input";
-import Comments from "../components/Comments";
-import ConfirmDelete from "../components/ConfirmDelete";
+// App Components
+import CardTop from "./CardTop";
+import Input from "./Input";
+import Comments from "./Comments";
+import ConfirmDelete from "./ConfirmDelete";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
   },
 
-  entryDetails: {
+  entry: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.dark,
   },
 
-  entryDetailsBox: {
+  entryBox: {
     height: "32px",
     display: "flex",
     flexDirection: "row",
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 1),
   },
 
-  entryDetailsIcon: {
+  entryIcon: {
     margin: theme.spacing(0, 1),
   },
 
@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Entry({
+function FullCard({
   authenticated,
   userAuthenticated,
   username,
@@ -107,8 +107,7 @@ function Entry({
   likes,
   likesCount,
   updateLikesCount,
-  setEntryDetails,
-  ...props
+  setEntry,
 }) {
   const history = useHistory();
   const params = useParams();
@@ -140,11 +139,11 @@ function Entry({
     api.entries
       .getOne(params.id)
       .then(({ data }) => {
-        setEntryDetails(data);
+        setEntry(data);
         return setLoading(false);
       })
       .catch((err) => console.log(err));
-  }, [params, setEntryDetails, likes]);
+  }, [params, setEntry, likes]);
 
   return loading ? (
     <CircularProgress className={classes.loader} />
@@ -152,14 +151,14 @@ function Entry({
     <Fade key={id} in={!!id} timeout={600}>
       <div className={clsx([classes.container])}>
         <div>
-          <EntryTop />
+          <CardTop />
           <Input type={"comments"} />
         </div>
 
-        <div className={classes.entryDetails}>
-          <Typography className={classes.entryDetailsBox}>
+        <div className={classes.entry}>
+          <Typography className={classes.entryBox}>
             <FontAwesomeIcon
-              className={classes.entryDetailsIcon}
+              className={classes.entryIcon}
               icon={commentsCount > 0 ? "comments" : ["far", "comments"]}
             />
             <strong>{commentsCount}&nbsp;</strong>
@@ -167,7 +166,7 @@ function Entry({
               {commentsCount !== 1 ? "Comments" : "Comment"}
             </span>
           </Typography>
-          <Typography className={classes.entryDetailsBox}>
+          <Typography className={classes.entryBox}>
             {authenticated && (
               <IconButton
                 className={classes.btnMinus}
@@ -179,7 +178,7 @@ function Entry({
               </IconButton>
             )}
             <FontAwesomeIcon
-              className={classes.entryDetailsIcon}
+              className={classes.entryIcon}
               icon={likesCount > 0 ? "heart" : ["far", "heart"]}
             />
             <strong>{likesCount}&nbsp;</strong>
@@ -199,7 +198,7 @@ function Entry({
           </Typography>
           {userAuthenticated === username && (
             <Fade in={userAuthenticated === username} timeout={500}>
-              <Typography className={classes.entryDetailsBox}>
+              <Typography className={classes.entryBox}>
                 <Button
                   className={classes.deleteButton}
                   variant="outlined"
@@ -231,7 +230,19 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
   updateLikesCount,
-  setEntryDetails,
+  setEntry,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(Entry);
+FullCard.propTypes = {
+  authenticated: PropTypes.bool,
+  userAuthenticated: PropTypes.string,
+  username: PropTypes.string,
+  id: PropTypes.string,
+  likes: PropTypes.array,
+  likesCount: PropTypes.number,
+  commentsCount: PropTypes.number,
+  updateLikesCount: PropTypes.func,
+  setEntry: PropTypes.func,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(FullCard);

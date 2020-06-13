@@ -1,13 +1,15 @@
 import React from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { Link, useLocation } from "react-router-dom";
 
-//Store
+// Store
 import { connect } from "react-redux";
 
 // MUI Components
+import { useTheme, makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BottomBar({ authenticated, ...props }) {
+function BottomBar({ authenticated }) {
   const theme = useTheme();
   const classes = useStyles();
   const path = useLocation().pathname;
@@ -104,5 +106,9 @@ function BottomBar({ authenticated, ...props }) {
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
 });
+
+BottomBar.propTypes = {
+  authenticated: PropTypes.bool,
+};
 
 export default connect(mapStateToProps)(BottomBar);

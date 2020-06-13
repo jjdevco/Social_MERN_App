@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useParams } from "react-router-dom";
 
-//Store
+// Store
 import { connect } from "react-redux";
 import { getEntries } from "../store/actions/entriesActions";
 
-//MUI Components
+// APP Components
+import Card from "./Card";
+
+// MUI Components
 import { makeStyles } from "@material-ui/core/styles";
 import Fade from "@material-ui/core/Fade";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
-// APP Components
-import Card from "./Card";
 
 const useStyles = makeStyles((theme) => ({
   loading: {
@@ -30,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Entries({ authenticated, getEntries, entries, ...props }) {
+function Cards({ getEntries, entries }) {
   const classes = useStyles();
   const { username } = useParams();
   const [loading, setLoading] = useState(true);
@@ -45,7 +48,19 @@ function Entries({ authenticated, getEntries, entries, ...props }) {
 
   let recentEntries =
     entries.length > 0
-      ? entries.map((entry) => <Card key={entry.id} data={entry} />)
+      ? entries.map((entry) => (
+          <Card
+            key={entry.id}
+            id={entry.id}
+            username={entry.username}
+            userAvatar={entry.userAvatar}
+            body={entry.body}
+            commentsCount={entry.commentsCount}
+            likesCount={entry.likesCount}
+            media={entry.media}
+            createdAt={entry.createdAt}
+          />
+        ))
       : "";
 
   return loading ? (
@@ -58,7 +73,6 @@ function Entries({ authenticated, getEntries, entries, ...props }) {
 }
 
 const mapStateToProps = (state) => ({
-  authenticated: state.user.authenticated,
   entries: state.entries.entries,
 });
 
@@ -66,4 +80,9 @@ const mapActionsToProps = {
   getEntries,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(Entries);
+Card.propTypes = {
+  entries: PropTypes.array,
+  getEntries: PropTypes.func,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Cards);

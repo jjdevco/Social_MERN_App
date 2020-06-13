@@ -1,15 +1,18 @@
 import React from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useLocation } from "react-router-dom";
 
 //Store
 import { connect } from "react-redux";
 
-//Mui Components
-import { makeStyles } from "@material-ui/core/styles";
-
 //App components
 import AuthenticationCard from "./AuthenticationCard";
 import Profile from "./Profile";
+
+//Mui Components
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,11 +26,12 @@ const useStyles = makeStyles((theme) => ({
     width: "inherit",
     border: `3px solid ${theme.palette.primary.main}`,
     borderRadius: "5px",
+    boxShadow: theme.shadows[3],
     transition: theme.transitions.create(),
   },
 }));
 
-function SideContent({ authenticated, ...props }) {
+function SideContent({ authenticated }) {
   const classes = useStyles();
 
   const path = useLocation().pathname;
@@ -48,5 +52,9 @@ function SideContent({ authenticated, ...props }) {
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
 });
+
+SideContent.propTypes = {
+  authenticated: PropTypes.bool,
+};
 
 export default connect(mapStateToProps)(SideContent);

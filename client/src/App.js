@@ -1,7 +1,9 @@
 import React from "react";
+
+// Router
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-// Redux Store
+//  Store
 import { Provider } from "react-redux";
 import store from "./store";
 
@@ -11,6 +13,18 @@ import AuthRoute from "./middleware/AuthRoute";
 // App Theme
 import "./styles/app.css";
 import { appTheme } from "./theme";
+
+// Pages
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+
+// App Components
+import Cards from "./components/Cards";
+import FullCard from "./components/FullCard";
+import NavBar from "./components/NavBar";
+import BottomBar from "./components/BottomBar";
+import SideContent from "./components/SideContent";
+import TransitionerPage from "./components/TransitionerPage";
 
 // MUI Components
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -23,18 +37,6 @@ import {
 // Font Awesome Icons
 import { library } from "@fortawesome/fontawesome-svg-core";
 import icons from "./utils/icons";
-
-// Pages
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import Entry from "./pages/Entry";
-
-// App Components
-import Entries from "./components/Entries";
-import NavBar from "./components/NavBar";
-import BottomBar from "./components/BottomBar";
-import SideContent from "./components/SideContent";
-import TransitionerPage from "./components/TransitionerPage";
 
 library.add(...icons);
 
@@ -77,7 +79,17 @@ function App() {
             <main className={classes.main}>
               <div className={classes.route}>
                 <Switch>
-                  <Route path="/" component={TransitionerPage(Entries)} exact />
+                  <Route path="/" component={TransitionerPage(Cards)} exact />
+                  <Route
+                    path="/user/:username"
+                    component={TransitionerPage(Cards)}
+                    exact
+                  />
+                  <Route
+                    path="/entry/:id"
+                    component={TransitionerPage(FullCard)}
+                    exact
+                  />
                   <AuthRoute
                     path="/signin"
                     component={TransitionerPage(SignIn)}
@@ -85,16 +97,6 @@ function App() {
                   <AuthRoute
                     path="/signup"
                     component={TransitionerPage(SignUp)}
-                  />
-                  <Route
-                    path="/entry/:id"
-                    component={TransitionerPage(Entry)}
-                    exact
-                  />
-                  <Route
-                    path="/user/:username"
-                    component={TransitionerPage(Entries)}
-                    exact
                   />
                 </Switch>
               </div>

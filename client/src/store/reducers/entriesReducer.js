@@ -2,16 +2,15 @@ import {
   ADD_ENTRY,
   ADD_COMMENT,
   SET_ENTRIES,
+  SET_ENTRY,
   REMOVE_ENTRY,
   OPEN_ENTRY_NEW,
   CLOSE_ENTRY_NEW,
-  SET_ENTRY_DETAILS,
   UPDATE_LIKES_COUNT,
 } from "../types";
 
 const initialState = {
   entryNew: false,
-  entryDetails: false,
   entries: [],
   entry: {},
 };
@@ -43,7 +42,7 @@ export default function (state = initialState, { type, payload }) {
       };
     }
 
-    case SET_ENTRY_DETAILS:
+    case SET_ENTRY:
       return {
         ...state,
         entry: payload,

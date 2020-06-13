@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useHistory } from "react-router-dom";
 
-import api from "../services/api";
-
-//Store
+// Store
 import { connect } from "react-redux";
 import {
   getProfile,
@@ -11,6 +12,9 @@ import {
   updateDetails,
   logOut,
 } from "../store/actions/userActions";
+
+// Api
+import api from "../services/api";
 
 //Mui Components
 import { makeStyles } from "@material-ui/core/styles";
@@ -83,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
   bio: {
     maxHeight: "80px",
     overflowY: "auto",
+    marginBottom: theme.spacing(0.5),
   },
 
   detailsText: {
@@ -178,7 +183,6 @@ function Profile({
   updateAvatar,
   updateDetails,
   logOut,
-  ...props
 }) {
   const classes = useStyles();
 
@@ -245,7 +249,7 @@ function Profile({
       let formData = {};
 
       for (let input in form) {
-        if (!!form[input]) formData[input] = form[input];
+        if (!!form[input]) formData[input] = form[input].trimStart().trimEnd();
       }
 
       await api.user
@@ -331,16 +335,18 @@ function Profile({
         >
           @{data.username}
         </Typography>
-        <Typography
-          className={classes.bio}
-          variant="subtitle1"
-          align="center"
-          component="div"
-        >
-          <strong>"</strong>
-          {!!data.bio && data.bio}
-          <strong>"</strong>
-        </Typography>
+        {!!data.bio && (
+          <Typography
+            className={classes.bio}
+            variant="h6"
+            align="center"
+            component="div"
+          >
+            <strong>"</strong>
+            {!!data.bio && data.bio}
+            <strong>"</strong>
+          </Typography>
+        )}
         {!!data.address && (
           <Typography
             className={classes.detailsText}
@@ -483,6 +489,15 @@ const mapActionsToProps = {
   updateAvatar,
   updateDetails,
   logOut,
+};
+
+Profile.propTypes = {
+  userLogged: PropTypes.object,
+  profile: PropTypes.object,
+  getProfile: PropTypes.func,
+  updateAvatar: PropTypes.func,
+  updateDetails: PropTypes.func,
+  logOut: PropTypes.func,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Profile);

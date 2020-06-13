@@ -1,18 +1,22 @@
 import React from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useHistory } from "react-router-dom";
-//Store
+
+// Store
 import { connect } from "react-redux";
 
-// Date to Time util
-import formatDate from "../utils/timeago";
+// App Components
+import Media from "./Media";
 
-//MUI Components
+// MUI Components
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 
-//App Components
-import Media from "./Media";
+// Date to time-string util
+import * as timeago from "timeago.js";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -63,15 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function EntryTop({
-  userAvatar,
-  username,
-  body,
-  media,
-  createdAt,
-  closeEntryDetails,
-  ...props
-}) {
+function CardTop({ userAvatar, username, body, media, createdAt }) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -95,7 +91,7 @@ function EntryTop({
             @{username}
           </Typography>
           <Typography className={classes.headerTextDate} variant="body2">
-            {formatDate(createdAt)}
+            {timeago.format(createdAt, "en_EN")}
           </Typography>
         </div>
       </div>
@@ -115,4 +111,12 @@ const mapStateToProps = (state) => ({
   ...state.entries.entry,
 });
 
-export default connect(mapStateToProps)(EntryTop);
+CardTop.propTypes = {
+  userAvatar: PropTypes.string,
+  username: PropTypes.string,
+  body: PropTypes.string,
+  media: PropTypes.string,
+  createdAt: PropTypes.string,
+};
+
+export default connect(mapStateToProps)(CardTop);

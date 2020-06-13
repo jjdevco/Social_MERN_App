@@ -1,8 +1,13 @@
 import React, { useState, useEffect, createRef, forwardRef } from "react";
+import PropTypes from "prop-types";
 
-//Store
+// Store
 import { connect } from "react-redux";
 import { closeEntryNew } from "../store/actions/entriesActions";
+
+// APP Components
+import Input from "./Input";
+import Media from "./Media";
 
 // MUI Components
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,10 +16,6 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-
-//APP Components
-import Input from "./Input";
-import Media from "./Media";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -198,7 +199,7 @@ const Uploader = forwardRef((props, ref) => {
   );
 });
 
-function New({ open, closeEntryNew, ...props }) {
+function New({ open, closeEntryNew }) {
   const classes = useStyles();
   const input = createRef();
 
@@ -224,7 +225,7 @@ function New({ open, closeEntryNew, ...props }) {
             className={classes.closeButton}
             icon={["far", "times-circle"]}
           />
-          <Input media={input} type="entries" />
+          <Input ref={input} type="entries" />
           <Uploader ref={input} />
         </div>
       </Fade>
@@ -238,6 +239,11 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
   closeEntryNew,
+};
+
+New.propTypes = {
+  open: PropTypes.bool,
+  closeEntryNew: PropTypes.func,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(New);

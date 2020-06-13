@@ -1,6 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-//MUI Components
+// MUI Components
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Media({ height = "100%", blob = false, name, src, ...props }) {
+function Media({ height = "100%", blob = false, name, src }) {
   const classes = useStyles();
 
   const isImage = /(?:([^:/?#]+):)?(?:([^/?#]*))?([^?#]*\.(?:jpe?g|gif|png))(?:\?([^#]*))?(?:#(.*))?/.test(
@@ -38,5 +39,12 @@ function Media({ height = "100%", blob = false, name, src, ...props }) {
     </Card>
   );
 }
+
+Media.propTypes = {
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  blob: PropTypes.bool,
+  name: PropTypes.string,
+  src: PropTypes.string.isRequired,
+};
 
 export default Media;

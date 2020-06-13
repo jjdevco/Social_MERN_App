@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useHistory } from "react-router-dom";
 
 //Store
@@ -8,9 +11,7 @@ import {
   deleteNotifications,
 } from "../store/actions/userActions";
 
-// Date to Time util
-import formatDate from "../utils/timeago";
-
+// Styles
 import "../styles/app.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
@@ -27,6 +28,9 @@ import IconButton from "@material-ui/core/IconButton";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// Date to time-string util
+import * as timeago from "timeago.js";
 
 const useStyles = makeStyles((theme) => ({
   menuButtton: {
@@ -45,19 +49,13 @@ const useStyles = makeStyles((theme) => ({
   },
 
   menu: {
+    maxWidth: "350px",
     display: "flex",
     flexDirection: "column",
+    flexGrow: 1,
+    margin: theme.spacing(1),
     border: `2px solid ${theme.palette.primary.main}`,
     backgroundColor: theme.palette.background.main,
-    [theme.breakpoints.only("xs")]: {
-      width: "200px",
-    },
-    [theme.breakpoints.up("sm")]: {
-      width: "300px",
-    },
-    [theme.breakpoints.up("lg")]: {
-      width: "450px",
-    },
   },
 
   title: {
@@ -68,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   items: {
-    maxHeight: "300px",
+    maxHeight: "500px",
     overflowY: "auto",
   },
 
@@ -230,7 +228,7 @@ const Notifications = ({
                         } your entry`}
                       </span>
                       <small className={classes.date}>
-                        &nbsp;{`(${formatDate(el.createdAt)})`}
+                        &nbsp;({timeago.format(el.createdAt, "en_EN")})
                       </small>
                     </Typography>
                     <IconButton
@@ -278,6 +276,12 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
   markNotifications,
   deleteNotifications,
+};
+
+Notifications.propTypes = {
+  notifications: PropTypes.array,
+  markNotifications: PropTypes.func,
+  deleteNotifications: PropTypes.func,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Notifications);

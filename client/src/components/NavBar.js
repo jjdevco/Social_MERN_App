@@ -1,10 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useHistory } from "react-router-dom";
 
-//Store
+// Store
 import { connect } from "react-redux";
 import { checkAuth } from "../store/actions/userActions";
 import { openEntryNew } from "../store/actions/entriesActions";
+
+// APP Components
+import New from "./New";
+import Notifications from "./Notifications";
 
 // MUI Components
 import clsx from "clsx";
@@ -13,10 +20,6 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
-
-//APP Components
-import New from "./New";
-import Notifications from "./Notifications";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,21 +30,15 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.secondary.main,
     borderStyle: "none none solid none",
     backgroundColor: theme.palette.background.light,
-    color: theme.palette.background.contrastText,
   },
 
   toolbar: {
-    width: "100%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    margin: "0 auto",
     padding: theme.spacing(0.5, 0),
-
-    [theme.breakpoints.down(1000)]: {
-      maxWidth: "700px",
-    },
+    margin: theme.spacing(0, 1),
   },
 
   left: {
@@ -49,10 +46,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     flexGrow: 1,
     maxWidth: "650px",
-    marginLeft: theme.spacing(1),
   },
 
   iconButton: {
+    width: "48px",
     transition: theme.transitions.create(),
     "&:hover": {
       backgroundColor: fade(theme.palette.primary.light, 0.2),
@@ -71,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
     margin: theme.spacing(0.5, 1),
     padding: theme.spacing(0, 2),
+    color: theme.palette.background.contrastText,
     backgroundColor: fade(theme.palette.background.dark, 0.6),
     transition: theme.transitions.create(),
   },
@@ -110,33 +108,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function usePrevious(value) {
-  const ref = useRef();
-
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
-}
-
-function NavBar({
-  authenticated,
-  credentials,
-  initialize,
-  checkAuth,
-  openEntryNew,
-  location,
-  ...props
-}) {
+function NavBar({ authenticated, checkAuth, openEntryNew }) {
   const classes = useStyles();
   const history = useHistory();
   const pathname = history.location.pathname;
 
   const [activeSearch, setActiveSearch] = useState(false);
   const [path, setPath] = useState(pathname);
-
-  const prevPath = usePrevious(path);
 
   const handleGo = (e) => {
     return path !== "/" ? history.goBack() : window.location.reload(false);
@@ -148,7 +126,7 @@ function NavBar({
   }, [pathname, checkAuth]);
 
   return (
-    <AppBar className={classes.bar}>
+    <AppBar classes={{ root: classes.bar }}>
       <Toolbar
         variant="dense"
         classes={{
@@ -162,9 +140,7 @@ function NavBar({
             color="primary"
             onClick={handleGo}
           >
-            <FontAwesomeIcon
-              icon={!!prevPath && path !== "/" ? "arrow-left" : "home"}
-            />
+            <FontAwesomeIcon icon={path !== "/" ? "arrow-left" : "home"} />
           </IconButton>
           <div
             className={clsx([
@@ -217,6 +193,12 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
   checkAuth,
   openEntryNew,
+};
+
+NavBar.propTypes = {
+  authenticated: PropTypes.bool,
+  checkAuth: PropTypes.func,
+  openEntryNew: PropTypes.func,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(NavBar);

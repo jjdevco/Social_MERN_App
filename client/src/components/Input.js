@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useHistory, useLocation } from "react-router-dom";
 
-//Store
+// Store
 import { connect } from "react-redux";
 import { addEntry, addComment } from "../store/actions/entriesActions";
 
-// Api Services
+// Api
 import api from "../services/api";
 
-//MUI Components
+// MUI Components
 import clsx from "clsx";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -97,14 +100,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Input({
+  ref,
   type,
-  entryDetails,
   authenticated,
   entryId,
-  media,
   addEntry,
   addComment,
-  ...props
+  credentials,
 }) {
   const history = useHistory();
   const location = useLocation();
@@ -129,11 +131,11 @@ function Input({
     if (type === "entries") {
       content = new FormData();
       content.append("body", input);
-      if (media.current.files[0])
+      if (ref.current.files[0])
         content.append(
           "media",
-          media.current.files[0],
-          media.current.files[0].name
+          ref.current.files[0],
+          ref.current.files[0].name
         );
     } else {
       content.id = entryId;
@@ -166,11 +168,13 @@ function Input({
   };
 
   useEffect(() => {
-    setActiveInput(false);
-    setInput("");
-    setMaxChars(0);
-    setSending(false);
-  }, [entryDetails]);
+    return () => {
+      setActiveInput(false);
+      setInput("");
+      setMaxChars(0);
+      setSending(false);
+    };
+  });
 
   return (
     <div className={classes.input}>
@@ -178,10 +182,10 @@ function Input({
         className={classes.avatarInput}
         aria-label="avatar-input"
         alt="avatar-input"
-        src={props.credentials.avatarUrl}
+        src={credentials.avatarUrl}
       >
-        {props.credentials.username
-          ? props.credentials.username.charAt(0).toUpperCase()
+        {credentials.username
+          ? credentials.username.charAt(0).toUpperCase()
           : ""}
       </Avatar>
       <div className={classes.inputBox}>
@@ -235,13 +239,22 @@ function Input({
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
   credentials: state.user.credentials,
-  entryDetails: state.entries.entryDetails,
   entryId: state.entries.entry.id,
 });
 
 const mapActionsToProps = {
   addEntry,
   addComment,
+};
+
+Input.propTypes = {
+  ref: PropTypes.object,
+  authenticated: PropTypes.bool,
+  type: PropTypes.string,
+  entryId: PropTypes.string,
+  credentials: PropTypes.object,
+  addEntry: PropTypes.func,
+  addComment: PropTypes.func,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Input);

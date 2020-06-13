@@ -1,7 +1,9 @@
 import React from "react";
+
+// Router
 import { Link } from "react-router-dom";
 
-//Mui Components
+// Mui Components
 import { makeStyles } from "@material-ui/core/styles";
 import Fade from "@material-ui/core/Fade";
 import Typography from "@material-ui/core/Typography";

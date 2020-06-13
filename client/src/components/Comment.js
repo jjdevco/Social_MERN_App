@@ -1,8 +1,8 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
 
-// Date to Time util
-import formatDate from "../utils/timeago";
+// Router
+import { useHistory } from "react-router-dom";
 
 // MUI Components
 import clsx from "clsx";
@@ -11,6 +11,9 @@ import Container from "@material-ui/core/Container";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
+
+// Date to time-string util
+import * as timeago from "timeago.js";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -86,10 +89,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Comment({ first, last, ...props }) {
+function Comment({ first, last, username, userAvatar, body, createdAt }) {
   const classes = useStyles();
   const history = useHistory();
-  const { username, userAvatar, body, createdAt } = props.data;
 
   return (
     <Container
@@ -132,7 +134,7 @@ function Comment({ first, last, ...props }) {
           </Typography>
 
           <Typography className={classes.date} variant="caption">
-            - {formatDate(createdAt)}
+            - {timeago.format(createdAt, "en_EN")}
           </Typography>
         </div>
 
@@ -143,5 +145,14 @@ function Comment({ first, last, ...props }) {
     </Container>
   );
 }
+
+Comment.propTypes = {
+  first: PropTypes.bool,
+  last: PropTypes.bool,
+  username: PropTypes.string,
+  userAvatar: PropTypes.string,
+  body: PropTypes.string,
+  createdAt: PropTypes.string,
+};
 
 export default Comment;

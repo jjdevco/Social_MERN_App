@@ -3,16 +3,16 @@ import {
   ADD_ENTRY,
   ADD_COMMENT,
   SET_ENTRIES,
-  SET_ENTRY_DETAILS,
+  SET_ENTRY,
   REMOVE_ENTRY,
   OPEN_ENTRY_NEW,
   CLOSE_ENTRY_NEW,
   UPDATE_LIKES_COUNT,
 } from "../types";
 
-export const setEntryDetails = (entry) => (dispatch) =>
+export const setEntry = (entry) => (dispatch) =>
   dispatch({
-    type: SET_ENTRY_DETAILS,
+    type: SET_ENTRY,
     payload: entry,
   });
 

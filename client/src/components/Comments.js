@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 
-//Store
+// Store
 import { connect } from "react-redux";
 
-//MUI Components
-import { makeStyles } from "@material-ui/core/styles";
-
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-
-//App Components
+// App Components
 import Comment from "./Comment";
+
+// MUI Components
+import { makeStyles } from "@material-ui/core/styles";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const useStyles = makeStyles((theme) => ({
   commentsLoading: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Comments({ comments, ...props }) {
+function Comments({ comments }) {
   const classes = useStyles();
 
   useEffect(() => {}, [comments]);
@@ -39,7 +39,10 @@ function Comments({ comments, ...props }) {
         <CSSTransition classNames="fade" key={index} timeout={300}>
           <Comment
             key={index}
-            data={comment}
+            username={comment.username}
+            userAvatar={comment.userAvatar}
+            body={comment.body}
+            createdAt={comment.createdAt}
             first={index === 0}
             last={index === comments.length - 1}
           />
@@ -57,5 +60,9 @@ function Comments({ comments, ...props }) {
 const mapStateToProps = (state) => ({
   comments: state.entries.entry.comments,
 });
+
+Comments.propTypes = {
+  comments: PropTypes.array,
+};
 
 export default connect(mapStateToProps)(Comments);

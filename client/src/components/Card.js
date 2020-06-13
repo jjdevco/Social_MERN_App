@@ -1,8 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useHistory } from "react-router-dom";
 
-// Date to Time util
-import formatDate from "../utils/timeago";
+// APP Components
+import Media from "./Media";
 
 // MUI Components
 import clsx from "clsx";
@@ -13,11 +16,11 @@ import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 
-// APP Components
-import Media from "./Media";
-
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// Date to time-string util
+import * as timeago from "timeago.js";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,19 +128,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Card({ openEntryDetails, openEntryRemove, ...props }) {
+function Card({
+  id,
+  username,
+  userAvatar,
+  body,
+  commentsCount,
+  likesCount,
+  media,
+  createdAt,
+}) {
   const classes = useStyles();
   const history = useHistory();
-  const {
-    id,
-    username,
-    userAvatar,
-    body,
-    commentsCount,
-    likesCount,
-    media,
-    createdAt,
-  } = props.data;
 
   const toProfile = (e) => {
     e.stopPropagation();
@@ -159,7 +161,7 @@ function Card({ openEntryDetails, openEntryRemove, ...props }) {
             alt="avatar"
             src={userAvatar}
           >
-            {username.charAt(0).toUpperCase()}
+            {username && username.charAt(0).toUpperCase()}
           </Avatar>
 
           <Divider
@@ -180,7 +182,7 @@ function Card({ openEntryDetails, openEntryRemove, ...props }) {
           </div>
 
           <Typography className={classes.date} variant="body2">
-            {formatDate(createdAt)}
+            {timeago.format(createdAt, "en_EN")}
           </Typography>
 
           <Typography
@@ -224,5 +226,16 @@ function Card({ openEntryDetails, openEntryRemove, ...props }) {
     </Container>
   );
 }
+
+Card.propTypes = {
+  id: PropTypes.string,
+  username: PropTypes.string,
+  userAvatar: PropTypes.string,
+  body: PropTypes.string,
+  commentsCount: PropTypes.number,
+  likesCount: PropTypes.number,
+  media: PropTypes.string,
+  createdAt: PropTypes.string,
+};
 
 export default Card;

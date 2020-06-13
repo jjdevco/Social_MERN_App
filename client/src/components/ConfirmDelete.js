@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+
+// Router
 import { useHistory } from "react-router-dom";
 
-// Api Services
+// Api
 import api from "../services/api";
 
-//Store
+// Store
 import { connect } from "react-redux";
 import { removeEntry } from "../store/actions/entriesActions";
 
-//MUI Components
+// MUI Components
 import { makeStyles } from "@material-ui/core/styles";
 import Fade from "@material-ui/core/Fade";
 import Modal from "@material-ui/core/Modal";
@@ -66,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ConfirmDelete({ entry, removeEntry, close, ...props }) {
+function ConfirmDelete({ entry, close, removeEntry }) {
   const classes = useStyles();
   const history = useHistory();
   const [deleting, setDeleting] = useState(false);
@@ -136,6 +139,12 @@ function ConfirmDelete({ entry, removeEntry, close, ...props }) {
 
 const mapActionsToProps = {
   removeEntry,
+};
+
+ConfirmDelete.propTypes = {
+  entry: PropTypes.string,
+  close: PropTypes.func,
+  removeEntry: PropTypes.func,
 };
 
 export default connect(null, mapActionsToProps)(ConfirmDelete);
