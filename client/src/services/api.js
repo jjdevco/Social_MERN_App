@@ -39,6 +39,12 @@ export default {
         ...options,
       }),
 
+    searchUsers: (username, options = {}) =>
+      axios.get(`${baseURL}/user/profiles/${username}`, {
+        ...defaultOptions(),
+        ...options,
+      }),
+
     changeAvatar: (data, options = {}) =>
       axios.post(`${baseURL}/user/avatar`, data, {
         ...defaultOptions(),

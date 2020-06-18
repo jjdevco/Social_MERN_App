@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 
 // Router
@@ -8,6 +8,9 @@ import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { checkAuth } from "../store/actions/userActions";
 import { openEntryNew } from "../store/actions/entriesActions";
+
+// Api
+import api from "../services/api";
 
 // APP Components
 import New from "./New";
@@ -19,6 +22,8 @@ import clsx from "clsx";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
 import Fade from "@material-ui/core/Fade";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import AppBar from "@material-ui/core/AppBar";
@@ -26,9 +31,16 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Popper from "@material-ui/core/Popper";
+import MenuList from "@material-ui/core/MenuList";
+import MenuItem from "@material-ui/core/MenuItem";
+import Avatar from "@material-ui/core/Avatar";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Typography, CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   bar: {
@@ -99,12 +111,44 @@ const useStyles = makeStyles((theme) => ({
   },
 
   inputRoot: {
+    width: "inherit",
     color: "inherit",
   },
 
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(2)}px)`,
+  },
+
+  eraseIcon: {
+    color: theme.palette.error.main,
+    cursor: "pointer",
+    "&:hover": {
+      color: theme.palette.error.dark,
+    },
+  },
+
+  menu: {
+    width: "inherit",
+  },
+
+  menuSearchBtn: {
+    borderBottom: `5px solid ${theme.palette.secondary.light}`,
+  },
+
+  menuItem: {
+    borderTop: `1px solid ${theme.palette.secondary.light}`,
+  },
+
+  menuItemAvatar: {
+    marginRight: theme.spacing(1),
+    border: `2px solid ${theme.palette.primary.light}`,
+  },
+
+  loadingResults: {
+    display: "flex",
+    minHeight: "150px",
+    margin: "auto",
   },
 
   buttons: {
@@ -153,15 +197,46 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
   const history = useHistory();
   const pathname = history.location.pathname;
 
+  const [search, setSearch] = useState("");
+  const [loadingResults, setLoadingResults] = useState(false);
+  const [results, setResults] = useState([]);
+  const [openSearchBox, setOpenSearchBox] = useState(false);
   const [activeSearch, setActiveSearch] = useState(false);
   const [path, setPath] = useState(pathname);
   const [profile, setProfile] = useState(false);
 
   const small = useMediaQuery(theme.breakpoints.down(1000));
 
-  const handleGo = (e) => {
+  const menuRef = useRef(null);
+
+  const handleNavigation = (e) => {
     return path !== "/" ? history.goBack() : window.location.reload(false);
   };
+
+  const handleGo = (username) => {
+    setOpenSearchBox(false);
+    history.push(`/user/${username}`);
+  };
+
+  const handleSearch = useCallback(() => {
+    if (search.length > 0) {
+      setOpenSearchBox(true);
+      return api.user.searchUsers(search).then(({ data }) => {
+        setResults(data);
+        setLoadingResults(false);
+      });
+    }
+  }, [search]);
+
+  useEffect(() => {
+    setLoadingResults(true);
+    const timeout = setTimeout(() => {
+      handleSearch();
+    }, 500);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [search, handleSearch]);
 
   useEffect(() => {
     checkAuth();
@@ -181,11 +256,12 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
           <IconButton
             className={classes.iconButton}
             color="primary"
-            onClick={handleGo}
+            onClick={handleNavigation}
           >
             <FontAwesomeIcon icon={path !== "/" ? "arrow-left" : "home"} />
           </IconButton>
           <div
+            ref={menuRef}
             className={clsx([
               classes.search,
               activeSearch && classes.searchActive,
@@ -204,9 +280,92 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
                 input: classes.inputInput,
               }}
               inputProps={{ "aria-label": "search" }}
+              value={search}
               onFocus={() => setActiveSearch(true)}
               onBlur={() => setActiveSearch(false)}
+              onChange={(e) => setSearch(e.target.value)}
+              endAdornment={
+                search.length > 0 ? (
+                  <InputAdornment position="end">
+                    <FontAwesomeIcon
+                      className={classes.eraseIcon}
+                      icon="times"
+                      onClick={() => setSearch("")}
+                    />
+                  </InputAdornment>
+                ) : (
+                  ""
+                )
+              }
             />
+            <Popper
+              open={openSearchBox}
+              anchorEl={menuRef.current}
+              role={undefined}
+              transition
+              disablePortal
+              className={classes.menu}
+            >
+              {({ TransitionProps }) => (
+                <Grow
+                  {...TransitionProps}
+                  style={{
+                    transformOrigin: "left 75",
+                  }}
+                  timeout={{ appear: 500, enter: 500, exit: 100 }}
+                >
+                  <Paper elevation={3}>
+                    <ClickAwayListener
+                      onClickAway={() => setOpenSearchBox(false)}
+                    >
+                      {loadingResults ? (
+                        <CircularProgress
+                          className={classes.loadingResults}
+                          color="primary"
+                        />
+                      ) : (
+                        <MenuList style={{ padding: 0 }}>
+                          <MenuItem
+                            className={classes.menuSearchBtn}
+                            onClick={(e) => handleGo(search)}
+                          >
+                            Go to <strong>&nbsp;@{search}</strong>
+                          </MenuItem>
+                          {results.map(({ avatar, username }) => (
+                            <Fade in={!!username} key={username}>
+                              <MenuItem
+                                className={classes.menuItem}
+                                onClick={(e) => handleGo(username)}
+                              >
+                                <Avatar
+                                  className={classes.menuItemAvatar}
+                                  aria-label="avatar"
+                                  alt="avatar"
+                                  src={avatar}
+                                >
+                                  {username.charAt(0).toUpperCase()}
+                                </Avatar>
+                                <Typography>
+                                  <strong>@</strong>
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: username.replace(
+                                        search,
+                                        "<strong>" + search + "</strong>"
+                                      ),
+                                    }}
+                                  ></span>
+                                </Typography>
+                              </MenuItem>
+                            </Fade>
+                          ))}
+                        </MenuList>
+                      )}
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
           </div>
         </div>
         {authenticated && (

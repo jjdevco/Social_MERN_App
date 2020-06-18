@@ -127,6 +127,31 @@ exports.getUserInfo = function (req, res) {
     });
 };
 
+exports.getUsersInfo = function (req, res) {
+  const { search } = req.params;
+  return db
+    .collection("users")
+    .orderBy("createdAt", "desc")
+    .get()
+    .then((data) => {
+      let users = [];
+      data.forEach((user) => {
+        if (user.data().username.includes(search))
+          users.push({
+            avatar: user.data().avatarUrl,
+            username: user.data().username,
+          });
+      });
+      res.json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ message: "something went wrong, try again later..." });
+    });
+};
+
 exports.updateUserDetails = function (req, res) {
   const fields = validator.userDetails(req.body);
   return db

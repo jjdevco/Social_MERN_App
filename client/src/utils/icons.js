@@ -21,6 +21,7 @@ import {
   faCamera,
   faMapMarkerAlt,
   faLink,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faComments,
@@ -47,6 +48,7 @@ const icons = [
   faEyeSlash,
   faCommentDots,
   faTimesCircle,
+  faTimes,
   faPlus,
   faMinus,
   faHeartfull,

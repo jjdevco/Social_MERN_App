@@ -9,6 +9,7 @@ const {
   signIn,
   getUserInfo,
   getUserProfile,
+  getUsersInfo,
   updateUserDetails,
   uploadAvatar,
   onAvatarChange,
@@ -49,6 +50,7 @@ app.use(function (req, res, next) {
 // Users routes
 app.get("/user", verifyAuth, getUserInfo);
 app.get("/user/profile/:username", getUserProfile);
+app.get("/user/profiles/:search", getUsersInfo);
 app.post("/signup", signUp);
 app.post("/signin", signIn);
 app.post("/user/details", verifyAuth, updateUserDetails);
