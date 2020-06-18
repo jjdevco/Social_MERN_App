@@ -132,6 +132,7 @@ exports.getUsersInfo = function (req, res) {
   return db
     .collection("users")
     .orderBy("createdAt", "desc")
+    .limit(15)
     .get()
     .then((data) => {
       let users = [];

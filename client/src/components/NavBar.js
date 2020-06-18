@@ -220,16 +220,19 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
 
   const handleSearch = useCallback(() => {
     if (search.length > 0) {
+      setLoadingResults(true);
       setOpenSearchBox(true);
       return api.user.searchUsers(search).then(({ data }) => {
         setResults(data);
         setLoadingResults(false);
       });
+    } else {
+      setOpenSearchBox(false);
+      setLoadingResults(false);
     }
   }, [search]);
 
   useEffect(() => {
-    setLoadingResults(true);
     const timeout = setTimeout(() => {
       handleSearch();
     }, 500);
@@ -299,7 +302,7 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
               }
             />
             <Popper
-              open={openSearchBox}
+              open={openSearchBox && search.length > 0}
               anchorEl={menuRef.current}
               role={undefined}
               transition
@@ -312,7 +315,7 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
                   style={{
                     transformOrigin: "left 75",
                   }}
-                  timeout={{ appear: 500, enter: 500, exit: 100 }}
+                  timeout={{ appear: 500, enter: 500, exit: 0 }}
                 >
                   <Paper elevation={3}>
                     <ClickAwayListener
