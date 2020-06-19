@@ -178,16 +178,18 @@ function Input({
 
   return (
     <div className={classes.input}>
-      <Avatar
-        className={classes.avatarInput}
-        aria-label="avatar-input"
-        alt="avatar-input"
-        src={credentials.avatarUrl}
-      >
-        {credentials.username
-          ? credentials.username.charAt(0).toUpperCase()
-          : ""}
-      </Avatar>
+      {authenticated && (
+        <Avatar
+          className={classes.avatarInput}
+          aria-label="avatar-input"
+          alt="avatar-input"
+          src={credentials.avatarUrl}
+        >
+          {credentials.username
+            ? credentials.username.charAt(0).toUpperCase()
+            : ""}
+        </Avatar>
+      )}
       <div className={classes.inputBox}>
         <div
           className={clsx([

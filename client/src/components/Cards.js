@@ -18,9 +18,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   loading: {
-    height: "100vh",
-    display: "flex",
-    flexDirection: "row",
     margin: "auto",
   },
 

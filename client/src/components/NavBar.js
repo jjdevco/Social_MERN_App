@@ -130,6 +130,9 @@ const useStyles = makeStyles((theme) => ({
 
   menu: {
     width: "inherit",
+    [theme.breakpoints.only("xs")]: {
+      width: "calc(100vw - 20%)",
+    },
   },
 
   menuSearchBtn: {
@@ -146,9 +149,10 @@ const useStyles = makeStyles((theme) => ({
   },
 
   loadingResults: {
+    minHeight: "100px",
     display: "flex",
-    minHeight: "150px",
-    margin: "auto",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   noResults: {
@@ -330,10 +334,9 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
                       onClickAway={() => setOpenSearchBox(false)}
                     >
                       {loadingResults ? (
-                        <CircularProgress
-                          className={classes.loadingResults}
-                          color="primary"
-                        />
+                        <div className={classes.loadingResults}>
+                          <CircularProgress color="primary" />
+                        </div>
                       ) : (
                         <MenuList style={{ padding: 0 }}>
                           {!search.match(/[^A-Za-z0-9_]/gi) && (

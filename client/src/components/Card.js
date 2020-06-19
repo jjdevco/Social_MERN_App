@@ -98,9 +98,8 @@ const useStyles = makeStyles((theme) => ({
   media: {
     marginBottom: theme.spacing(2),
     width: "100%",
-    border: `2px solid ${theme.palette.primary.main}`,
-    boxShadow: theme.shadows[5],
-    borderRadius: "6px",
+    boxShadow: theme.shadows[3],
+    borderRadius: "5px",
   },
 
   actions: {

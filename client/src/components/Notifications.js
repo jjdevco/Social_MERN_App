@@ -35,7 +35,6 @@ import * as timeago from "timeago.js";
 const useStyles = makeStyles((theme) => ({
   menuButtton: {
     "&:hover": {
-      // backgroundColor: "inherit",
       backgroundColor: fade(theme.palette.primary.light, 0.2),
       color: theme.palette.primary.dark,
     },
@@ -50,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
   },
 
   menu: {
-    maxWidth: "350px",
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
@@ -72,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   item: {
+    maxWidth: "350px",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",

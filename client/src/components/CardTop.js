@@ -60,9 +60,8 @@ const useStyles = makeStyles((theme) => ({
 
   entryMedia: {
     margin: theme.spacing(1, 0),
-    border: `2px solid ${theme.palette.primary.main}`,
-    boxShadow: theme.shadows[5],
-    borderRadius: "6px",
+    boxShadow: theme.shadows[3],
+    borderRadius: "5px",
   },
 }));
 
