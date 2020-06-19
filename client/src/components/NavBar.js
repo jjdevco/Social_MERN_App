@@ -151,6 +151,11 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
   },
 
+  noResults: {
+    padding: theme.spacing(4),
+    backgroundColor: theme.palette.background.main,
+  },
+
   buttons: {
     display: "flex",
     flexDirection: "row",
@@ -209,6 +214,8 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
 
   const menuRef = useRef(null);
 
+  const withoutSimbols = (word) => word.replace(/[^A-Za-z0-9_]/gi, "");
+
   const handleNavigation = (e) => {
     return path !== "/" ? history.goBack() : window.location.reload(false);
   };
@@ -222,7 +229,8 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
     if (search.length > 0) {
       setLoadingResults(true);
       setOpenSearchBox(true);
-      return api.user.searchUsers(search).then(({ data }) => {
+
+      return api.user.searchUsers(withoutSimbols(search)).then(({ data }) => {
         setResults(data);
         setLoadingResults(false);
       });
@@ -328,40 +336,55 @@ function NavBar({ authenticated, checkAuth, openEntryNew }) {
                         />
                       ) : (
                         <MenuList style={{ padding: 0 }}>
-                          <MenuItem
-                            className={classes.menuSearchBtn}
-                            onClick={(e) => handleGo(search)}
-                          >
-                            Go to <strong>&nbsp;@{search}</strong>
-                          </MenuItem>
-                          {results.map(({ avatar, username }) => (
-                            <Fade in={!!username} key={username}>
-                              <MenuItem
-                                className={classes.menuItem}
-                                onClick={(e) => handleGo(username)}
-                              >
-                                <Avatar
-                                  className={classes.menuItemAvatar}
-                                  aria-label="avatar"
-                                  alt="avatar"
-                                  src={avatar}
+                          {!search.match(/[^A-Za-z0-9_]/gi) && (
+                            <MenuItem
+                              className={classes.menuSearchBtn}
+                              onClick={(e) => handleGo(search)}
+                            >
+                              Go to <strong>&nbsp;@{search}</strong>
+                            </MenuItem>
+                          )}
+                          {results.length > 0 ? (
+                            results.map(({ avatar, username }) => (
+                              <Fade in={!!username} key={username}>
+                                <MenuItem
+                                  className={classes.menuItem}
+                                  onClick={(e) => handleGo(username)}
                                 >
-                                  {username.charAt(0).toUpperCase()}
-                                </Avatar>
-                                <Typography>
-                                  <strong>@</strong>
-                                  <span
-                                    dangerouslySetInnerHTML={{
-                                      __html: username.replace(
-                                        search,
-                                        "<strong>" + search + "</strong>"
-                                      ),
-                                    }}
-                                  ></span>
-                                </Typography>
-                              </MenuItem>
-                            </Fade>
-                          ))}
+                                  <Avatar
+                                    className={classes.menuItemAvatar}
+                                    aria-label="avatar"
+                                    alt="avatar"
+                                    src={avatar}
+                                  >
+                                    {username.charAt(0).toUpperCase()}
+                                  </Avatar>
+                                  <Typography noWrap>
+                                    <strong>@</strong>
+                                    <span
+                                      dangerouslySetInnerHTML={{
+                                        __html: username.replace(
+                                          withoutSimbols(search),
+                                          "<strong>" +
+                                            withoutSimbols(search) +
+                                            "</strong>"
+                                        ),
+                                      }}
+                                    ></span>
+                                  </Typography>
+                                </MenuItem>
+                              </Fade>
+                            ))
+                          ) : (
+                            <Typography
+                              className={classes.noResults}
+                              variant="h6"
+                              align="center"
+                              component="div"
+                            >
+                              No users found
+                            </Typography>
+                          )}
                         </MenuList>
                       )}
                     </ClickAwayListener>

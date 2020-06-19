@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   loading: {
-    height: "100%",
+    height: "300px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -123,7 +123,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: "calc(100vw - 100%)",
   },
 
   paper: {

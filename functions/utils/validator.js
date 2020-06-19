@@ -17,8 +17,11 @@ exports.user = function (form, action) {
     for (input in form) {
       if (form[input].trim() === "") errors[input] = "Must not be empty.";
 
+      if (input === "username" && form[input].match(/[^A-Za-z0-9_]/gi))
+        errors.username = "Only letters (a-z) and numbers are allowed.";
+
       if (input === "email" && !emailRegex.test(form[input]))
-        errors.email = "Must be a valid address.";
+        errors.email = "Must be a vsssalid address.";
 
       if (input === "repeatPassword" && form[input] !== form["password"])
         errors.repeatPassword = "Passwords must be the same.";

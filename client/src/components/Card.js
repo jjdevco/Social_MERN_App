@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 // Router
@@ -15,6 +15,8 @@ import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -143,10 +145,26 @@ function Card({
 }) {
   const classes = useStyles();
   const history = useHistory();
+  const menuRef = useRef();
+  const [openShare, setOpenShare] = useState(false);
 
   const toProfile = (e) => {
     e.stopPropagation();
     return history.push(`/user/${username}`);
+  };
+
+  const copy = (e) => {
+    const url = `${window.location.origin}/entry/${id}`;
+
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        console.log("Copy URL to clipboard successfully!");
+        setOpenShare(false);
+      })
+      .catch((err) => console.log(err));
+
+    console.log(url, window.location);
   };
 
   return (
@@ -221,9 +239,22 @@ function Card({
           </Typography>
         </div>
 
-        <IconButton className={classes.actionIcon} aria-label="share">
+        <IconButton
+          ref={menuRef}
+          className={classes.actionIcon}
+          aria-label="share"
+          onClick={() => setOpenShare(true)}
+        >
           <FontAwesomeIcon icon="share" />
         </IconButton>
+
+        <Menu
+          anchorEl={menuRef.current}
+          open={openShare}
+          onClose={() => setOpenShare(false)}
+        >
+          <MenuItem onClick={copy}>Copy Link</MenuItem>
+        </Menu>
       </div>
     </Container>
   );
