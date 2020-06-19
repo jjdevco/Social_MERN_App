@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { getEntries } from "../store/actions/entriesActions";
 
 // APP Components
+import FourZeroFour from "./FourZeroFour";
 import Card from "./Card";
 
 // MUI Components
@@ -34,27 +35,37 @@ function Cards({ getEntries, entries }) {
   const classes = useStyles();
   const { username } = useParams();
   const [loading, setLoading] = useState(true);
+  const [invalid, setInvalid] = useState(false);
 
   useEffect(() => {
-    getEntries(username).then(() => setLoading(false));
+    getEntries(username)
+      .then(() => setLoading(false))
+      .catch((err) => {
+        if (err.response.status === 404) setInvalid(true);
+        setLoading(false);
+        console.log(err);
+      });
   }, [getEntries, username]);
 
-  let recentEntries =
-    entries.length > 0
-      ? entries.map((entry) => (
-          <Card
-            key={entry.id}
-            id={entry.id}
-            username={entry.username}
-            userAvatar={entry.userAvatar}
-            body={entry.body}
-            commentsCount={entry.commentsCount}
-            likesCount={entry.likesCount}
-            media={entry.media}
-            createdAt={entry.createdAt}
-          />
-        ))
-      : "";
+  let recentEntries = invalid ? (
+    <FourZeroFour />
+  ) : entries.length > 0 ? (
+    entries.map((entry) => (
+      <Card
+        key={entry.id}
+        id={entry.id}
+        username={entry.username}
+        userAvatar={entry.userAvatar}
+        body={entry.body}
+        commentsCount={entry.commentsCount}
+        likesCount={entry.likesCount}
+        media={entry.media}
+        createdAt={entry.createdAt}
+      />
+    ))
+  ) : (
+    ""
+  );
 
   return loading ? (
     <CircularProgress className={classes.loading} color="primary" />

@@ -19,6 +19,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 
 // App Components
+import FourZeroFour from "./components/FourZeroFour";
 import Cards from "./components/Cards";
 import FullCard from "./components/FullCard";
 import NavBar from "./components/NavBar";
@@ -98,6 +99,9 @@ function App() {
                     path="/signup"
                     component={TransitionerPage(SignUp)}
                   />
+                  <Route path="*">
+                    <FourZeroFour />
+                  </Route>
                 </Switch>
               </div>
 

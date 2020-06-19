@@ -54,10 +54,17 @@ exports.getEntry = function (req, res) {
 exports.getEntriesByUser = function (req, res) {
   const { username } = req.params;
   return db
-    .collection("entries")
-    .where("username", "==", username)
-    .orderBy("createdAt", "desc")
+    .doc(`/users/${username}`)
     .get()
+    .then((user) => {
+      if (user.exists) {
+        return db
+          .collection("entries")
+          .where("username", "==", username)
+          .orderBy("createdAt", "desc")
+          .get();
+      } else throw new Error("invalid-user");
+    })
     .then((data) => {
       let entries = [];
       data.forEach((entry) => entries.push({ id: entry.id, ...entry.data() }));
@@ -65,9 +72,11 @@ exports.getEntriesByUser = function (req, res) {
     })
     .catch((err) => {
       console.error(err);
-      return res
-        .status(500)
-        .json({ message: "something went wrong, try again later..." });
+      return err.message == "invalid-user"
+        ? res.status(404).json({ error: "User not found." })
+        : res
+            .status(500)
+            .json({ message: "something went wrong, try again later..." });
     });
 };
 

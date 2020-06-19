@@ -38,11 +38,9 @@ export const getEntries = (username) => async (dispatch) =>
     ? await api.entries
         .getAll()
         .then(({ data }) => dispatch({ type: SET_ENTRIES, payload: data }))
-        .catch((err) => console.log(err))
     : await api.entries
         .getByUser(username)
-        .then(({ data }) => dispatch({ type: SET_ENTRIES, payload: data }))
-        .catch((err) => console.log(err));
+        .then(({ data }) => dispatch({ type: SET_ENTRIES, payload: data }));
 
 export const removeEntry = (entry) => (dispatch) =>
   dispatch({
