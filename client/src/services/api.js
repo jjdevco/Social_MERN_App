@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "";
+const baseURL = `http://localhost:5000/socialapp-94844/us-central1/api`;
 
 const defaultOptions = () => {
   const token = localStorage.authToken;

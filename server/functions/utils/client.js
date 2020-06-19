@@ -1,5 +1,5 @@
 const firebase = require("firebase");
-const config = require("./db-config");
+const { config } = require("./admin");
 
 firebase.initializeApp(config);
 

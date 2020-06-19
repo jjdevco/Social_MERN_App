@@ -1,6 +1,5 @@
 const functions = require("firebase-functions");
-const config = require("../utils/db-config");
-const { db, admin } = require("../utils/admin");
+const { db, admin, config } = require("../utils/admin");
 
 exports.getAllEntries = function (req, res) {
   return db

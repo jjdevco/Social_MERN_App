@@ -1,6 +1,5 @@
 const functions = require("firebase-functions");
-const config = require("../utils/db-config");
-const { admin, db } = require("../utils/admin");
+const { admin, db, config } = require("../utils/admin");
 const { auth } = require("../utils/client");
 const validator = require("../utils/validator");
 
